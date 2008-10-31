@@ -1,0 +1,7 @@
+propel:
+  _attributes:    { package: plugins.sfCombinePlugin.lib.model }
+
+  sf_combine:
+    _attributes:      { phpName: sfCombine }
+    assets_key:       { type: varchar, size: 32, required: true, primaryKey: true }
+    files:            { type: longvarchar, required: true }

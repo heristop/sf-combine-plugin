@@ -1,0 +1,13 @@
+prod:
+
+  # Assets optimizer
+  sfCombinePlugin:
+    enabled:        true    # enabling the plugin will combine script and css files into a single file
+    asset_version:  1       # key to the asset version (see below)
+    js:
+      minify:       true   # minification removes whitespaces and comments
+      minify_skip:  [jquery.min.js]
+      pack:         false   # packing reduces the filesize by using a JavaScript compression (warning: see below)
+    css:
+      minify:       true    # only minification is available for css
+    client_cache_max_age: 10   # enable the browser to keep a copy of the files for x days (false to disable)

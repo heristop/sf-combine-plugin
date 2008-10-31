@@ -1,0 +1,245 @@
+sfCombinePlugin
+===============
+
+sfCombinePlugin combines multiple JavaScript and CSS files into one JavaScript and one CSS file at runtime, in order to minimize the number of HTTP requests required to render a given page. If you want to know why this is essential for your website performance, read [Yahoo's Performance Research Findings](http://yuiblog.com/blog/2006/11/28/performance-research-part-1/).
+
+Without sfCombinePlugin, a typical page requires many HTTP requests to get JavaScript and CSS files:
+
+    [html]
+    <head>
+      ...
+      <script type="text/javascript" src="/sf/js/prototype/prototype.js"></script>
+      <script type="text/javascript" src="/sf/js/prototype/builder.js"></script>
+      <script type="text/javascript" src="/sf/js/prototype/effects.js"></script>
+      <link rel="stylesheet" type="text/css" media="screen" href="/css/main.css" />
+      <link rel="stylesheet" type="text/css" media="screen" href="/css/layout.css" />
+      <link rel="stylesheet" type="text/css" media="screen" href="/css/typo.css" />
+    </head>
+    
+
+With sfCombinePlugin, every page needs at most 2 HTTP requests for all JavaScript code and style rules:
+
+    [html]
+    <head>
+      ...
+      <script type="text/javascript" src="/sfCombine/js/key/fa85b641ddfa951e57ba96bf990d76c4"></script>
+      <link rel="stylesheet" type="text/css" media="screen" href="/sfCombine/css/key/21cf49fc13ba26430c5779c431e68995" />
+    </head>
+
+The JavaScript and CSS files are now served by a custom action of the `sfCombine` module, which combines and compresses several files into a single one.
+
+If another page requires the same combination of files, it will include calls to the `js` and `css` actions of the `sfCombine` module with a similar `key` parameter. Otherwise, the plugin generates a different `key`, so that only the required files are loaded by the new page.
+
+`sfCombinePlugin` is optimized and tested to work in professional environments:
+
+- The `sfCombine` module uses the symfony cache system to avoid executing the combination and compression routine for every request
+- HTTP 1.1 caching statements are added to let browsers and proxies keep the combined JavaScript and CSS files in their local cache
+- The combined files work in distributed environments, where you use several servers for load-balancing
+- No additional database query is required at runtime when an op-code cache engine (like APC) is available
+
+Requirements
+------------
+
+This plugin adds one database table, accessed by way of DbFinder, so that the plugin is ORM agnostic. That means the DbFinderPlugin must be installed on your application to allow the sfCombinePlugin to work.
+
+Installation
+------------
+
+1. Download the plugin.
+
+   The easiest way to download `sfCombinePlugin` is to use the symfony command line:
+
+        > php symfony plugin-install http://plugins.symfony-project.com/sfCombinePlugin
+
+   Alternatively, if you don't have PEAR installed, you can download the latest package attached to this plugin's page and extract it under your project's `plugins/` directory, or use `svn:externals` on your project's `plugins` directory.
+   
+2. Rebuild your model. For Propel, that means calling the `propel-build-model` task:
+
+        > php symfony propel-build-model
+
+   This will create a model called `sfCombine`.
+  
+3. Create the related `sf_combine` table in your database. Symfony can generate the necessary SQL code for you:
+
+        > php symfony propel-build-sql
+        
+   Then, depending on your database engine, use the SQL code generated in `data/sql/plugins.sfCombinePlugin.lib.model.schema.sql` to insert the table in the database. For instance, for mySQL:
+   
+        > mysql -u username -p dbname < data/sql/plugins.sfCombinePlugin.lib.model.schema.sql
+
+4. Enable the `sfCombine` module in your frontend application, via the `settings.yml` file.
+
+        [yml]
+        # in myproject/apps/frontend/config/settings.yml
+        all:
+          .settings:
+            enabled_modules: [..., sfCombine]
+
+5. Change the `common` filter class from `sfCommonFilter` to `sfCombineFilter` in your application `filters.yml`
+
+        [yml]
+        # in myproject/apps/frontend/config/filters.yml
+        rendering: ~
+        web_debug: ~
+        security:  ~
+
+        # generally, you will want to insert your own filters here
+
+        cache:     ~
+        common:
+          class: sfCombineFilter
+        flash:     ~
+        execution: ~
+
+6. Clear the cache to enable the autoloading to find the new classes
+
+        > php symfony cc
+
+Usage
+-----
+
+Once installed, your application still works the same as usual. You need to manually enable the `sfCombinePlugin` features by way of configuration.
+
+### Configuration
+
+Enable the plugin features through `app.yml`. You should enable the plugin only in the production and staging environments. This is because the plugin overhead is noticeable in the development environment, and because the plugin strips comments and whitespaces from your script and CSS files, making editions harder. So keep the plugin disabled in the development environment. A typical plugin setup would look like this:
+
+    [yml]
+    # in apps/frontend/config/app.yml
+    prod:
+      sfCombinePlugin:
+        enabled:        true    # enabling the plugin will combine script and css files into a single file
+        asset_version:  1       # key to the asset version (see below)
+        js:
+          minify:       true    # minification removes whitespaces and comments
+          minify_skip:  []      # place here the js files that should not be minified (for missing semicolons)
+          pack:         false   # packing reduces the filesize by using a JavaScript compression (warning: see below)
+          pack_skip:    []      # place here the js files that should not be packed
+        css:
+          minify:       true    # only minification is available for css
+        client_cache_max_age: 10   # enable the browser to keep a copy of the files for x days (false to disable)
+
+    all:
+      sfCombinePlugin:
+        enabled:  false         # this is the default value
+
+Once enabled with this setup, the plugin will combine and minify your script and CSS files in the production environment.
+
+### Caching
+
+The plugin uses an aggressive caching strategy to avoid adding overhead in production. The pages served by the `sfCombine` module use the symfony template cache, including the (empty) layout. The consequence is that a change in any of the original script or CSS files do not result in a change in the combined script or CSS files. To allow changes in the combined files in production, you must clear the symfony template cache:
+
+    > php symfony clear-cache frontend template
+    
+Alternatively, clearing the whole symfony cache will also do the trick.
+
+As the plugin uses the symfony template cache with layout, it is a perfect candidate for the [sfSuperCachePlugin](http://www.symfony-project.org/plugins/sfSuperCachePlugin). With this plugin installed and enabled, requests to a combined JavaScript or CSS file can be answered by the web server alone, without even initializing symfony.
+
+In addition to template cache, the `sfCombine` module includes an HTTP 1.1 `Cache-Control: max_age` header (see the [Chapter 12](http://www.symfony-project.org/book/1_0/12-Caching) of the symfony book for more information). By default, it is set to 10 days, but you can change this value by modifying the `app_sfCombinePlugin_client_cache_max_age` setting. Set it to `false` to disable client-side caching (although this is not recommended).
+
+### Asset versions
+
+Since the combined files are sent with `Cache-Control` headers to invite browsers and proxies to keep these files in the cache, modifications in the original JavaScript and CSS files may never reach the users. Consider the following scenario:
+
+1. User A downloads the home page of your application
+2. This pages requires combined script and CSS files, and allows the browser to keep them in cache for 10 days
+3. A little while after (less than 10 days), you modify a CSS of the home page and push that file in production
+4. User A downloads the home page again. It still references the same combined files, which are still in cache, so the browser doesn't even send a request for them and misses the updated version.
+
+To avoid this common pitfall, change the value of the `app_sfCombinePlugin_asset_version` setting every time you deploy a modified version of your script or CSS files to production. `sfCombinePlugin` uses this setting to generate the combined file key, so changing `app_sfCombinePlugin_asset_version` will change the key and force the browser to download an updated version.
+
+Use whatever value you want for `app_sfCombinePlugin_asset_version`; a common practice is to use incremental integers.
+
+### Javascript packing
+
+This plugin includes a PHP version of [Dean Edwards' JavasScript Packer](http://dean.edwards.name/packer/), which reduces JavaScript file sizes by an average of 80%, at the cost of a JavaScript decompression on the client side. It is very effective and can be combined with a gzip compression for even smaller file sizes. However, the Packer requires that all statements, *including function declarations*, must be correctly terminated with semi-colons. The following will work:
+
+    [js]
+    onload = function() {
+      input = document.getElementById("input");
+      output = document.getElementById("output");
+      clearAll(true);
+    };
+
+The following will not work and the packed JS code will be incorrect:
+
+    [js]
+    onload = function() {
+      input = document.getElementById("input");
+      output = document.getElementById("output");
+      clearAll(true);
+    }
+
+Notice the missing semi-colon at the END of function declarations.
+
+JavaScript packing is disabled by default. To enable it, set the `app_sfCombinePlugin_js_pack` setting to `true` in the `app.yml`. You can also exclude certain js files from the packing, by adding the file paths to the `app_sfCombinePlugin_js_pack_skip` array.
+
+### Moving script and CSS calls in the layout
+
+Each time you call `$response->addJavascript()` or `$response->addStylesheet()` in an action, `use_javascript()` or `use_stylesheet()` in a template, symfony stores the related file path in the response. The `common` filter outputs the correct HTML tag to include these files (`<script>` or `<link>`) just before the closing `</head>` tag by default. 
+
+    [php]
+    // in apps/frontend/templates/layout.php
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+      <?php include_http_metas() ?>
+      <?php include_metas() ?>
+      <?php include_title() ?>
+      <link rel="shortcut icon" href="/favicon.ico" />
+      <!-- This is where the common filter places <script> and <link> tags by default -->
+    </head>
+    <body>
+      <?php echo $sf_flash->getRaw('notice') ?>
+    </body>
+
+But you sometimes need to change the place where script and CSS inclusion tags appear in the source code. For instance, you may want to move the `<script>` tags to the bottom of the page, just before the `</body>`, to speed up page rendering. Or you may want to move the `<link>` tags before conditional comments in the header, to allow custom IE styles.
+
+Use the `include_combined_javascripts()` and the `include_combined_stylesheets()` helpers to tell symfony where to output the `<script>` and `<link>` tags. They belong to the `sfCombine` helper group, which must be declared prior to calling the helpers:
+
+    [php]
+    // in apps/frontend/templates/layout.php
+    <?php use_helper('sfCombine') ?>
+    <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+    <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+      <?php include_http_metas() ?>
+      <?php include_metas() ?>
+      <?php include_title() ?>
+      <link rel="shortcut icon" href="/favicon.ico" />
+      <?php include_combined_stylesheets() ?>
+      <!-- This is where the common filter will place <link> tags -->
+      <!--[if lte IE 6]>
+        <?php echo stylesheet_tag('ie6.css') ?>
+      <![endif]-->
+    </head>
+    <body>
+      <?php echo $sf_flash->getRaw('notice') ?>
+      <?php echo include_combined_javascripts() ?>
+      <!-- This is where the common filter will place <script> tags -->
+    </body>
+
+Note that if you use the regular `include_javascripts()` or `include_stylesheets()` helpers, these will output calls to the non-combined JavaScript and CSS files.
+
+### Using an alternative minifier
+
+You may want to use another Packer than the one bundled with this plugin. Whether you go for Dojo ShrinkSafe, YUI Compressor, or your custom packer, all you need to do is to define a new packer class, extending `sfCombiner`, and providing a `minify()` public method. Check the `sfCombineJs` class syntax for more information.
+
+Once your new minifier class is saved in an auto-loadable directory, change the `app_sfCombinePlugin_js_minifier_class` to the name of the class you added, clear the cache, and you're done.
+
+### Database cleanup
+
+To allow the combine routine to work in distributed environments, `sfCombinePlugin` stores the list of files required by a page in the `sf_combine` table. As you add new pages or change versions, outdated records may stack up in this table. The plugin provides a cleanup task to periodically empty the `sf_combine` task. You can use it safely every once in a while (monthly for instance):
+
+    > php symfony sfcombine-cleanup
+
+License
+-------
+
+This plugin is released under the MIT License, however it bundles a PHP port of Dean Edwards' Packer licensed in LGPL 2.1.
+
+Todo
+----
+
+* Allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage
+* Add a few helpers to be used in CSS files (now that they pass by PHP, CSS files can take advantage of helpers)

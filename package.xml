@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.4.1" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+  <name>sfCombinePlugin</name>
+  <channel>pear.symfony-project.com</channel>
+  <summary>Combines and compresses JavaScript and CSS files</summary>
+  <description>
+    Combines multiple JavaScript and CSS files into one JavaScript and one CSS file at runtime, in order to minimize the number of HTTP requests required to render a given page. This plugin works in distributed environments, supports asset version keys, and is highly customizable.
+  </description>
+  <lead>
+    <name>Alexandre Mogère</name>
+    <user>heristop</user>
+    <email>heristop@yahoo.fr</email>
+    <active>yes</active>
+  </lead>
+  <developer>
+   <name>François Zaninotto</name>
+   <user>fzaninotto</user>
+   <email>francois.zaninotto@symfony-project.com</email>
+   <active>yes</active>
+  </developer>
+  <date>2008-10-31</date>
+  <version>
+    <release>0.9.0</release>
+    <api>0.9.0</api>
+  </version>
+  <stability>
+    <release>beta</release>
+    <api>beta</api>
+  </stability>
+  <license uri="http://www.symfony-project.com/license">MIT license</license>
+  <notes>-</notes>
+  <contents>
+    <dir name="/">
+      <dir name="config">
+        <file name="app.sample.yml" role="data"/>
+        <file name="schema.yml" role="data"/>
+      </dir>
+      <dir name="data">
+        <dir name="tasks">
+          <file name="sfPakeCombineTask.class.php" role="data"/>
+        </dir>
+      </dir>
+      <dir name="lib">
+        <dir name="combiners">
+          <file name="sfCombineCss.class.php" role="data"/>
+          <file name="sfCombineJs.class.php" role="data"/>
+          <file name="sfCombiner.class.php" role="data"/>
+        </dir>
+        <dir name="filter">
+          <file name="sfCombineFilter.class.php" role="data"/>
+        </dir>
+        <dir name="helper">
+          <file name="sfCombineHelper.php" role="data"/>
+        </dir>
+        <dir name="model">
+          <file name="sfCombine.php" role="data"/>
+          <file name="sfCombinePeer.php" role="data"/>
+        </dir>
+        <dir name="vendor">
+          <file name="cssmin.class.php" role="data"/>
+          <file name="JavaScriptPacker.class.php" role="data"/>
+        </dir>
+      </dir>
+      <file name="LICENSE" role="data"/>
+      <dir name="modules">
+        <dir name="sfCombine">
+          <dir name="actions">
+            <file name="actions.class.php" role="data"/>
+          </dir>
+          <dir name="config">
+            <file name="cache.yml" role="data"/>
+          </dir>
+        </dir>
+      </dir>
+      <file name="README" role="data"/>
+    </dir>
+  </contents>
+  <dependencies>
+    <required>
+      <php>
+        <min>5.1.0</min>
+      </php>
+      <pearinstaller>
+        <min>1.4.1</min>
+      </pearinstaller>
+      <package>
+        <name>symfony</name>
+        <channel>pear.symfony-project.com</channel>
+        <min>0.8.1</min>
+        <max>1.1.0</max>
+        <exclude>1.1.0</exclude>
+      </package>
+    </required>
+  </dependencies>
+  <phprelease>
+ </phprelease>
+  <changelog>
+    <release>
+      <version>
+        <release>0.9.0</release>
+        <api>0.9.0</api>
+      </version>
+      <stability>
+       <release>beta</release>
+       <api>beta</api>
+      </stability>
+      <license uri="http://www.symfony-project.com/license">MIT license</license>
+      <date>2008-10-31</date>
+      <license>MIT</license>
+      <notes>
+        * heristop, francois: Initial version
+      </notes>
+    </release>
+ </changelog>
+</package>
