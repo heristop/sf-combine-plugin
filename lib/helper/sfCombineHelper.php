@@ -16,10 +16,12 @@ function get_combined_javascripts()
   if (!sfConfig::get('app_sfCombinePlugin_enabled', false)) return get_javascripts();
 
   $response = sfContext::getInstance()->getResponse();
-  $response->setParameter('javascripts_included', true, 'symfony/view/asset');    
-    
+  $response->setParameter('javascripts_included', true, 'symfony/view/asset');
+  $config = sfConfig::get('app_sfCombinePlugin_js', array());
+  $doNotCombine = isset($config['combine_skip']) ? $config['combine_skip'] : array();
   $html = '';
-  $cssFiles = array();
+  $jsFiles = array();
+  $regularJsFiles = array();
   foreach (array('first', '', 'last') as $position)
   {
     foreach ($response->getJavascripts($position) as $files => $options)
@@ -28,11 +30,29 @@ function get_combined_javascripts()
       {
         $files = array($files);
       }
-      $cssFiles = array_merge($cssFiles, $files);
+      // check for js files that should not be combined
+      foreach ($files as $key => $value)
+      {
+        if(in_array($value, $doNotCombine))
+        {
+          $regularJsFiles[$key] = $files[$key];
+          unset($files[$key]);
+        }
+      }
+      $jsFiles = array_merge($jsFiles, $files);
     }
   }
-  $key = _get_key($cssFiles);
-  return str_replace('.js', '', javascript_include_tag(url_for('sfCombine/js?key='.$key)));
+  if ($jsFiles)
+  {
+    $html .= str_replace('.js', '', javascript_include_tag(url_for('sfCombine/js?key=' . _get_key($jsFiles))));
+  }
+  foreach ($regularJsFiles as $file)
+  {
+    $file = javascript_path($file);
+    $html .= javascript_include_tag($file);
+  }
+  
+  return $html;
 }
 
 function include_combined_javascripts()
@@ -54,7 +74,7 @@ function get_combined_stylesheets()
   if (!sfConfig::get('app_sfCombinePlugin_enabled', false)) return get_stylesheets();
 
   $response = sfContext::getInstance()->getResponse();
-  $response->setParameter('stylesheets_included', true, 'symfony/view/asset');    
+  $response->setParameter('stylesheets_included', true, 'symfony/view/asset');
     
   $html = '';
   $cssFiles = array();
@@ -69,8 +89,12 @@ function get_combined_stylesheets()
       $cssFiles = array_merge($cssFiles, $files);
     }
   }
-  $key = _get_key($cssFiles);
-  return str_replace('.css', '', stylesheet_tag(url_for('sfCombine/css?key='.$key)));
+  if($cssFiles)
+  {
+    $html .= str_replace('.css', '', stylesheet_tag(url_for('sfCombine/css?key=' . _get_key($cssFiles))));
+  }
+  
+  return $html;
 }
 
 function include_combined_stylesheets()
@@ -79,7 +103,7 @@ function include_combined_stylesheets()
 }
 
 /**
- * Returns a key which combined all assets file
+ * Returns a key combining all assets file
  *
  * @return string md5
  */

@@ -17,7 +17,8 @@ class sfCombineFilter extends sfFilter
     $content = $response->getContent();
     
     // include javascripts and stylesheets
-    if (false !== ($pos = strpos($content, '</head>')))
+    if (false !== ($pos = strpos($content, '</head>'))          // has a </head> tag
+     && false !== strpos($response->getContentType(), 'html'))  // is html content
     {
       sfLoader::loadHelpers(array('sfCombine'));
       $html = '';
@@ -41,5 +42,4 @@ class sfCombineFilter extends sfFilter
     $response->setParameter('javascripts_included', false, 'symfony/view/asset');
     $response->setParameter('stylesheets_included', false, 'symfony/view/asset');
   }
-  
 }

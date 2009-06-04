@@ -5,7 +5,7 @@ class sfCombineActions extends sfActions
   public function preExecute()
   {
     sfConfig::set('sf_web_debug', false);
-    $this->setLayout(false);
+    $this->setTemplate('asset');
     $max_age = sfConfig::get('app_sfCombinePlugin_client_cache_max_age', false);
     if ($max_age !== false)
     {
@@ -19,20 +19,18 @@ class sfCombineActions extends sfActions
   public function executeJs()
   {
     $this->getResponse()->setContentType('application/x-javascript');
-    $minifierClass = sfConfig::get('app_sfCombinePlugin_js_minifier_class', 'sfCombineJs');
+    $config = sfConfig::get('app_sfCombinePlugin_js', array());
+    $minifierClass = isset($config['minifier_class']) ? $config['minifier_class'] : 'sfCombineJs';
     $cj = new $minifierClass();
-    $script = $cj->process($this->getRequestParameter('key'));
-    
-    return $this->renderText($script);
+    $this->assets = $cj->process($this->getRequestParameter('key'));
   }
   
   public function executeCss()
   {
     $this->getResponse()->setContentType('text/css');
-    $minifierClass = sfConfig::get('app_sfCombinePlugin_css_minifier_class', 'sfCombineCss');
+    $config = sfConfig::get('app_sfCombinePlugin_css', array());
+    $minifierClass = isset($config['minifier_class']) ? $config['minifier_class'] : 'sfCombineCss';
     $cs = new $minifierClass();
-    $style = $cs->process($this->getRequestParameter('key'));
-    
-    return $this->renderText($style);
+    $this->assets = $cs->process($this->getRequestParameter('key'));
   }
 }

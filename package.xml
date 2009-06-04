@@ -69,6 +69,10 @@
           </dir>
           <dir name="config">
             <file name="cache.yml" role="data"/>
+            <file name="view.yml" role="data"/>
+          </dir>
+          <dir name="templates">
+            <file name="assetSuccess.php" role="data"/>
           </dir>
         </dir>
       </dir>
