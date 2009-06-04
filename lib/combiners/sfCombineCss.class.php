@@ -37,7 +37,7 @@ class sfCombineCss extends sfCombiner
   
   protected function getAssetPath($file)
   {
-    sfLoader::loadHelpers('Asset');
+    sfContext::getInstance()->getConfiguration()->loadHelpers('Asset');
     
     return stylesheet_path($file);
   }

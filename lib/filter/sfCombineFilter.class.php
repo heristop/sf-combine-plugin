@@ -8,38 +8,42 @@
  */
 class sfCombineFilter extends sfFilter
 {
+  /**
+   * Executes this filter.
+   *
+   * @param sfFilterChain $filterChain A sfFilterChain instance
+   */
   public function execute($filterChain)
   {
     // execute next filter
     $filterChain->execute();
-    
+
+    // execute this filter only once
     $response = $this->context->getResponse();
-    $content = $response->getContent();
-    
+
     // include javascripts and stylesheets
+    $content = $response->getContent();
     if (false !== ($pos = strpos($content, '</head>'))          // has a </head> tag
      && false !== strpos($response->getContentType(), 'html'))  // is html content
     {
-      sfLoader::loadHelpers(array('sfCombine'));
+      $this->context->getConfiguration()->loadHelpers(array('Tag', 'Asset', 'Url', 'sfCombine'));
       $html = '';
-      
-      if (!$response->getParameter('javascripts_included', false, 'symfony/view/asset'))
+      if (!sfConfig::get('symfony.asset.javascripts_included', false))
       {
         $html .= get_combined_javascripts();
       }
-      
-      if (!$response->getParameter('stylesheets_included', false, 'symfony/view/asset'))
+      if (!sfConfig::get('symfony.asset.stylesheets_included', false))
       {
         $html .= get_combined_stylesheets();
       }
-      
+
       if ($html)
       {
-        $response->setContent(substr($content, 0, $pos) . $html . substr($content, $pos));
+        $response->setContent(substr($content, 0, $pos).$html.substr($content, $pos));
       }
     }
-    
-    $response->setParameter('javascripts_included', false, 'symfony/view/asset');
-    $response->setParameter('stylesheets_included', false, 'symfony/view/asset');
+
+    sfConfig::set('symfony.asset.javascripts_included', false);
+    sfConfig::set('symfony.asset.stylesheets_included', false);
   }
 }

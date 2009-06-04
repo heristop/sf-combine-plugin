@@ -53,21 +53,22 @@ abstract class sfCombiner
     
     if (!$combine)
     {
-      throw new Exception('Calling non-existent combined asset file: '. $key);
+      throw new Exception('Calling non-existent combined asset file: ' . $key);
     }
     
     $contents = array();
+    //echo '<pre>'.print_r($combine, true).'</pre>';
     foreach ($combine->getFiles() as $file)
     {
       $filePath = $this->getAssetPath($file);
-      $include = @file_get_contents(sfConfig::get('sf_web_dir').$filePath);
+      $include = @file_get_contents(sfConfig::get('sf_web_dir') . $filePath);
       if ($include === false)
       {
         // maybe we are looking for a file under $symfony_data_dir/web/sf ?
-        $include = @file_get_contents(sfConfig::get('sf_symfony_data_dir').'/web'.$filePath);
+        $include = @file_get_contents(sfConfig::get('sf_symfony_data_dir') . '/web'.$filePath);
         if ($include === false)
         {
-          sfLogger::getInstance()->err('Can not open '.sfConfig::get('sf_web_dir').$filePath.' for merging');
+          sfContext::getInstance()->getLogger()->err('Can not open '.sfConfig::get('sf_web_dir') . $filePath.' for merging');
         }
       }
       if($include)

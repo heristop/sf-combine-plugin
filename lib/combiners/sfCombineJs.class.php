@@ -103,7 +103,7 @@ class sfCombineJs extends sfCombiner
   
   protected function getAssetPath($file)
   {
-    sfLoader::loadHelpers('Asset');
+    sfContext::getInstance()->getConfiguration()->loadHelpers('Asset');
 
     return javascript_path($file);
   }

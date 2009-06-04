@@ -6,6 +6,13 @@ class sfCombineActions extends sfActions
   {
     sfConfig::set('sf_web_debug', false);
     $this->setTemplate('asset');
+    
+    // gzip compression
+    if (sfConfig::get('app_sfCombinePlugin_gzip', true))
+    {
+      ob_start("ob_gzhandler");
+    }
+    
     $max_age = sfConfig::get('app_sfCombinePlugin_client_cache_max_age', false);
     if ($max_age !== false)
     {
