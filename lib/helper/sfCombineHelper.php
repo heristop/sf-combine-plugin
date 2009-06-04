@@ -24,6 +24,8 @@ function get_combined_javascripts()
   $jsFiles = array();
   $regularJsFiles = array();
   $response = sfContext::getInstance()->getResponse();
+  $config = sfConfig::get('app_sfCombinePlugin_js', array());
+  $doNotCombine = isset($config['combine_skip']) ? $config['combine_skip'] : array();
   foreach ($response->getJavascripts() as $files => $options)
   {
     if (!is_array($files))
