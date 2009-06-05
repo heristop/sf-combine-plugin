@@ -57,7 +57,7 @@ abstract class sfCombiner
     }
     
     $contents = array();
-    //echo '<pre>'.print_r($combine, true).'</pre>';
+
     foreach ($combine->getFiles() as $file)
     {
       $filePath = $this->getAssetPath($file);

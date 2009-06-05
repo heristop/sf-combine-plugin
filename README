@@ -115,6 +115,7 @@ Enable the plugin features through `app.yml`. You should enable the plugin only 
         enabled:        true     # enabling the plugin will combine script and css files into a single file
         asset_version:  1        # key to the asset version (see below)
         client_cache_max_age: 10 # enable the browser to keep a copy of the files for x days (false to disable)
+        gzip:           true     # allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage (false to disable)
         js:
           combine_skip:          # these files will not be combined (necessary when js code is based on js file name)
             - /js/tiny_mce/tiny_mce.js
@@ -288,11 +289,16 @@ This plugin is released under the MIT License, however it bundles a PHP port of 
 Todo
 ----
 
-* Allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage
 * Add a few helpers to be used in CSS files (now that they pass by PHP, CSS files can take advantage of helpers)
 
 Changelog
 ---------
+
+### 2009-06-05 | trunk
+
+ * heristop: Added better controls on assets to skip
+ * heristop: Added Doctrine schema
+ * heristop: Allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage
 
 ### 2008-11-04 | trunk
 

@@ -26,6 +26,7 @@ function get_combined_javascripts()
   $response = sfContext::getInstance()->getResponse();
   $config = sfConfig::get('app_sfCombinePlugin_js', array());
   $doNotCombine = isset($config['combine_skip']) ? $config['combine_skip'] : array();
+
   foreach ($response->getJavascripts() as $files => $options)
   {
     if (!is_array($files))
@@ -35,9 +36,9 @@ function get_combined_javascripts()
     // check for js files that should not be combined
     foreach ($files as $key => $value)
     {
-      if(in_array($value, $doNotCombine))
+      if (in_array(str_replace('.js', '', $value), str_replace('.js', '', $doNotCombine)))
       {
-        $regularJsFiles[$key] = $files[$key];
+        array_push($regularJsFiles, $value);
         unset($files[$key]);
       }
     }
