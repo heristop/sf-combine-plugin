@@ -116,14 +116,17 @@ function _get_key($files)
   if (function_exists('apc_store') && ini_get('apc.enabled')) 
   {
     $cache = new sfAPCCache();
+    // FIXME: APCCache "has" method dosn't work 
+    $checkFunction = apc_fetch($key);
   }
   else
   {
     $cache = new sfFileCache(array('cache_dir'=>sfConfig::get('sf_cache_dir').'/combiners'));
+    $checkFunction = $cache->has($key);
   }
-  
+
   // Checks if key exists
-  if(!$cache->has($key))
+  if(false === $checkFunction)
   {
     $keyExists = DbFinder::from('sfCombine')->
       where('AssetsKey', $key)->
