@@ -49,7 +49,7 @@ Installation
 
    The easiest way to download `sfCombinePlugin` is to use the symfony command line:
 
-        > php symfony plugin-install http://plugins.symfony-project.com/sfCombinePlugin
+        > php symfony plugin:install sfCombinePlugin --release=1.0.0
 
    Alternatively, if you don't have PEAR installed, you can download the latest package attached to this plugin's page and extract it under your project's `plugins/` directory, or use `svn:externals` on your project's `plugins` directory.
    
@@ -279,7 +279,7 @@ Once your new minifier class is saved in an auto-loadable directory, change the 
 
 To allow the combine routine to work in distributed environments, `sfCombinePlugin` stores the list of files required by a page in the `sf_combine` table. As you add new pages or change versions, outdated records may stack up in this table. The plugin provides a cleanup task to periodically empty the `sf_combine` task. You can use it safely every once in a while (monthly for instance):
 
-    > php symfony sfcombine-cleanup
+    > php symfony combine:cleanup
 
 License
 -------
