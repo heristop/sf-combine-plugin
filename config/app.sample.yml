@@ -5,7 +5,7 @@ dev:
 all:
   sfCombinePlugin:
     enabled:        true     # enabling the plugin will combine script and css files into a single file
-    asset_version:  2        # key to the asset version (see below)
+    asset_version:  1        # key to the asset version (see below)
     client_cache_max_age: 10 # enable the browser to keep a copy of the files for x days (false to disable)
     gzip:           true     # allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage
     js:

@@ -36,7 +36,7 @@ function get_combined_javascripts()
     // check for js files that should not be combined
     foreach ($files as $key => $value)
     {
-      if (in_array(str_replace('.js', '', $value), str_replace('.js', '', $doNotCombine)))
+      if (skip_asset($value, $doNotCombine))
       {
         array_push($regularJsFiles, $value);
         unset($files[$key]);
@@ -116,7 +116,7 @@ function _get_key($files)
   if (function_exists('apc_store') && ini_get('apc.enabled')) 
   {
     $cache = new sfAPCCache();
-    // FIXME: APCCache "has" method dosn't work 
+    // FIXME: APCCache "has" method doesn't work 
     $checkFunction = apc_fetch($key);
   }
   else
@@ -126,7 +126,7 @@ function _get_key($files)
   }
 
   // Checks if key exists
-  if(false === $checkFunction)
+  if (false === $checkFunction)
   {
     $keyExists = DbFinder::from('sfCombine')->
       where('AssetsKey', $key)->
@@ -142,4 +142,17 @@ function _get_key($files)
   }
 
   return $key;
+}
+
+/**
+ * Checks if an asset has to be skipped by the merge
+ *
+ * @param string $value
+ * @param array  $doNotCombine
+ *
+ * @return boolean
+ */
+function skip_asset($value, $doNotCombine)
+{
+  return in_array(str_replace(array('.js', '.css'), '', $value), str_replace(array('.js', '.css'), '', $doNotCombine));
 }

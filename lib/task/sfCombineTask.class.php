@@ -3,7 +3,7 @@
 /**
  * Cleanup sf_combine table
  *
- * @package    symfony
+ * @package    sfCombinePlugin
  * @subpackage task
  * @author     Alexandre Mogère
  */
@@ -64,7 +64,6 @@ EOF;
       $results = DbFinder::from('sfCombine')->find();
       foreach ($results as $result)
       {
-        //$this->logSection('combine', 'Cleaning ' . $result->getAssetsKey());
         $cache->remove($result->getAssetsKey());
       }
       

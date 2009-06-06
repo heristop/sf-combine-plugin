@@ -22,7 +22,7 @@ class sfCombineJs extends sfCombiner
       
       foreach ($files as $filePath => $content)
       {
-        if (!in_array($filePath, $skipMinify))
+        if (!skip_asset($filePath, $skipMinify))
         {
           $files[$filePath] = $this->minify($content);
         }
@@ -45,18 +45,18 @@ class sfCombineJs extends sfCombiner
         $toProcess = '';
         foreach ($files as $filePath => $content)
         {
-          if (!in_array($filePath, $skipPack))
-          {
-            $toProcess .= $content;
-          }
-          else
+          if (skip_asset($filePath, $skipPack))
           {
             $finalContent .= $this->pack($toProcess);
             $finalContent .= $content;
             $toProcess = '';
           }
+          else
+          {
+            $toProcess .= $content;
+          }
         }
-        if($toProcess)
+        if ($toProcess)
         {
           $packer = new JavaScriptPacker($toProcess, 'Normal', true, false);
           $finalContent .= $packer->pack();

@@ -18,10 +18,10 @@
   <email>francois.zaninotto@symfony-project.com</email>
   <active>yes</active>
  </developer>
- <date>2009-06-05</date>
+ <date>2009-06-06</date>
  <version>
-   <release>1.0.0</release>
-   <api>1.0.0</api>
+   <release>1.0.1</release>
+   <api>1.0.1</api>
  </version>
  <stability>
   <release>stable</release>
@@ -29,7 +29,7 @@
  </stability>
 <license uri="http://www.symfony-project.com/license">MIT</license>
  <notes>-</notes>
- <contents><dir name="/"><dir name="modules"><dir name="sfCombine"><dir name="templates"><file name="assetSuccess.php" role="data"/></dir><dir name="actions"><file name="actions.class.php" role="data"/></dir><dir name="config"><file name="cache.yml" role="data"/><file name="view.yml" role="data"/></dir></dir></dir><file name="LICENSE" role="data"/><dir name="lib"><dir name="task"><file name="sfCombineTask.class.php" role="data"/></dir><dir name="vendor"><file name="JavaScriptPacker.class.php" role="data"/><file name="cssmin.class.php" role="data"/></dir><dir name="filter"><file name="sfCombineFilter.class.php" role="data"/></dir><dir name="model"><file name="sfCombine.php" role="data"/><file name="sfCombinePeer.php" role="data"/><dir name="doctrine"><file name="PluginsfCombineTable.class.php" role="data"/><file name="PluginsfCombine.class.php" role="data"/></dir></dir><dir name="combiners"><file name="sfCombiner.class.php" role="data"/><file name="sfCombineJs.class.php" role="data"/><file name="sfCombineCss.class.php" role="data"/></dir><dir name="helper"><file name="sfCombineHelper.php" role="data"/></dir></dir><dir name="data"><dir name="tasks"><file name="sfPakeCombineTask.class.php" role="data"/></dir></dir><file name="README" role="data"/><dir name="config"><file name="app.sample.yml" role="data"/><dir name="doctrine"><file name="schema.yml" role="data"/></dir><file name="schema.yml" role="data"/></dir></dir></contents>
+ <contents><dir name="/"><dir name="modules"><dir name="sfCombine"><dir name="templates"><file name="assetSuccess.php" role="data"/></dir><dir name="actions"><file name="actions.class.php" role="data"/></dir><dir name="config"><file name="cache.yml" role="data"/><file name="view.yml" role="data"/></dir></dir></dir><file name="LICENSE" role="data"/><dir name="lib"><dir name="task"><file name="sfCombineTask.class.php" role="data"/></dir><dir name="vendor"><file name="JavaScriptPacker.class.php" role="data"/><file name="cssmin.class.php" role="data"/></dir><dir name="filter"><file name="sfCombineFilter.class.php" role="data"/></dir><dir name="model"><file name="sfCombine.php" role="data"/><file name="sfCombinePeer.php" role="data"/><dir name="doctrine"><file name="PluginsfCombineTable.class.php" role="data"/><file name="PluginsfCombine.class.php" role="data"/></dir></dir><dir name="combiners"><file name="sfCombiner.class.php" role="data"/><file name="sfCombineJs.class.php" role="data"/><file name="sfCombineCss.class.php" role="data"/></dir><dir name="helper"><file name="sfCombineHelper.php" role="data"/></dir></dir><file name="README" role="data"/><dir name="config"><file name="app.sample.yml" role="data"/><dir name="doctrine"><file name="schema.yml" role="data"/></dir><file name="schema.yml" role="data"/></dir></dir></contents>
 
  <dependencies>
   <required>
@@ -42,7 +42,7 @@
    <package>
     <name>symfony</name>
     <channel>pear.symfony-project.com</channel>
-    <min>1.2.0</min>
+    <min>1.1.0</min>
     <max>1.3.0</max>
     <exclude>1.3.0</exclude>
    </package>
@@ -53,6 +53,23 @@
  </phprelease>
 
  <changelog>
+    <release>
+      <version>
+        <release>1.0.1</release>
+        <api>1.0.1</api>
+      </version>
+      <stability>
+       <release>stable</release>
+       <api>stable</api>
+      </stability>
+      <license uri="http://www.symfony-project.com/license">MIT license</license>
+      <date>2009-06-06</date>
+      <license>MIT</license>
+      <notes>
+        * heristop: Delete extensions in order to compare assets to be ignored by the merge
+        * heristop: Avoid compression for buggy versions of IE
+      </notes>
+    </release>
     <release>
       <version>
         <release>1.0.0</release>
@@ -93,5 +110,5 @@
       </notes>
     </release>
  </changelog>
-  
+
 </package>

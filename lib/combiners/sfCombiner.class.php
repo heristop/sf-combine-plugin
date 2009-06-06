@@ -14,6 +14,11 @@ abstract class sfCombiner
   
   abstract protected function getAssetPath($file);
   
+  public function __construct()
+  {
+    sfContext::getInstance()->getConfiguration()->loadHelpers('sfCombine');
+  }
+  
   /**
    * Join an array of file contents
    * 

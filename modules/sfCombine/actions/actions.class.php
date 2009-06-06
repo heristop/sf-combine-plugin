@@ -1,5 +1,10 @@
 <?php
-
+/**
+ * sfCombineActions
+ *
+ * @package    sfCombinePlugin
+ * @author     Alexandre Mogère
+ */
 class sfCombineActions extends sfActions
 {
   public function preExecute()
@@ -8,7 +13,7 @@ class sfCombineActions extends sfActions
     $this->setTemplate('asset');
 
     // gzip compression
-    if (sfConfig::get('app_sfCombinePlugin_gzip', true) && !$this->checkIEFail())
+    if (sfConfig::get('app_sfCombinePlugin_gzip', true) && !self::checkIEFail())
     {
       ob_start("ob_gzhandler");
     }
@@ -41,7 +46,7 @@ class sfCombineActions extends sfActions
     $this->assets = $cs->process($this->getRequestParameter('key'));
   }
   
-  private function checkIEFail()
+  protected static function checkIEFail()
   {
     $userAgent = $_SERVER['HTTP_USER_AGENT'];
     
