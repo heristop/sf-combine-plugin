@@ -21,7 +21,7 @@ class sfCombineActions extends sfActions
     $max_age = sfConfig::get('app_sfCombinePlugin_client_cache_max_age', false);
     if ($max_age !== false)
     {
-      $lifetime = $max_age * 86400000; // 24*60*60*1000
+      $lifetime = $max_age * 86400; // 24*60*60
       $this->getResponse()->addCacheControlHttpHeader('max-age', $lifetime);
       $this->getResponse()->setHttpHeader('Pragma', null, false);
       $this->getResponse()->setHttpHeader('Expires', null, false);

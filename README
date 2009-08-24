@@ -297,6 +297,11 @@ Todo
 Changelog
 ---------
 
+### 2009-08-24 | trunk
+
+ * heristop: Fixed cache-control max-age which uses seconds
+ * heristop: Enabled pjs extension
+
 ### 2009-06-06 | trunk
 
  * heristop: Delete extensions in order to compare assets to be ignored by the merge

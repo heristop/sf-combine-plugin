@@ -47,7 +47,7 @@ function get_combined_javascripts()
   
   if ($jsFiles)
   {
-    $html .= str_replace('.js', '', javascript_include_tag(url_for('sfCombine/js?key=' . _get_key($jsFiles))));
+    $html .= str_replace(array('.js', '.pjs'), '', javascript_include_tag(url_for('sfCombine/js?key=' . _get_key($jsFiles))));
   }
   foreach ($regularJsFiles as $file)
   {
@@ -92,7 +92,7 @@ function get_combined_stylesheets()
   
   if($cssFiles)
   {
-    $html .= str_replace('.css', '', stylesheet_tag(url_for('sfCombine/css?key=' . _get_key($cssFiles))));
+    $html .= str_replace(array('.css', '.pcss'), '', stylesheet_tag(url_for('sfCombine/css?key=' . _get_key($cssFiles))));
   }
   
   return $html;
@@ -154,5 +154,6 @@ function _get_key($files)
  */
 function skip_asset($value, $doNotCombine)
 {
-  return in_array(str_replace(array('.js', '.css'), '', $value), str_replace(array('.js', '.css'), '', $doNotCombine));
+  $extensions = array('.js', '.css', '.pjs', 'pcss');
+  return in_array(str_replace($extensions, '', $value), str_replace($extensions, '', $doNotCombine));
 }
