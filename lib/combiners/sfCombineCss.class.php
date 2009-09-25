@@ -20,7 +20,7 @@ class sfCombineCss extends sfCombiner
       $finalContent = $this->minify($finalContent);
     }
     
-    return $finalContent;
+    return str_replace('../', '../../../../', $finalContent);
   }
   
   /**

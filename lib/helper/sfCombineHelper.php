@@ -45,7 +45,7 @@ function get_combined_javascripts()
     $jsFiles = array_merge($jsFiles, $files);
   }
   
-  if ($jsFiles)
+  if (!empty($jsFiles))
   {
     $html .= str_replace(array('.js', '.pjs'), '', javascript_include_tag(url_for('sfCombine/js?key=' . _get_key($jsFiles))));
   }
@@ -90,7 +90,7 @@ function get_combined_stylesheets()
     $cssFiles = array_merge($cssFiles, $files);
   }
   
-  if($cssFiles)
+  if (!empty($cssFiles))
   {
     $html .= str_replace(array('.css', '.pcss'), '', stylesheet_tag(url_for('sfCombine/css?key=' . _get_key($cssFiles))));
   }
