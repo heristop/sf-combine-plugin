@@ -106,7 +106,7 @@ function get_combined_stylesheets()
 function _get_key($files)
 {
   $content = base64_encode(serialize($files));
-  $key = md5($content . sfConfig::get('app_sfCombine_asset_version', ''));
+  $key = md5($content . sfConfig::get('app_sfCombinePlugin_asset_version', ''));
 
   if (!class_exists('DbFinder'))
   {
