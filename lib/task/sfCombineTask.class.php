@@ -5,7 +5,8 @@
  *
  * @package    sfCombinePlugin
  * @subpackage task
- * @author     Alexandre Mogère
+ * @author     Alexandre MogÃ¨re
+ * @author     Kevin Dew <kev@dewsolutions.co.uk>
  */
 class sfCombineCleanUpTask extends sfBaseTask
 {
@@ -35,17 +36,11 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    
-    if (!class_exists('DbFinder'))
-    {
-      throw new Exception('sfCombine expects DbFinder to call combined asset file');
-    }
-
     // initialize database manager
     $databaseManager = new sfDatabaseManager($this->configuration);
     $flag = true;
-  
-    if (function_exists('apc_store') && ini_get('apc.enabled')) 
+
+    if (function_exists('apc_store') && ini_get('apc.enabled'))
     {
       $cache = new sfAPCCache();
       if (!ini_get('apc.enable_cli'))
@@ -56,20 +51,30 @@ EOF;
     }
     else
     {
-      $cache = new sfFileCache(array('cache_dir'=>sfConfig::get('sf_cache_dir').'/combiners'));
+      $cache = new sfFileCache(array(
+        'cache_dir' => sfCombineUtility::getCacheDir()
+      ));
     }
-    
+
     if ($flag)
     {
-      $results = DbFinder::from('sfCombine')->find();
+      $results = sfCombine::getAll();
       foreach ($results as $result)
       {
-        $cache->remove($result->getAssetsKey());
+        $cache->remove($result->getAssetKey());
       }
-      
+
       $this->logSection('combine', 'Cleanup cache complete', null, 'INFO');
-      $nbAssets = DbFinder::from('sfCombine')->delete();
-      $this->logSection('combine', sprintf('Cleanup database complete (%d rows deleted)', $nbAssets), null, 'INFO');
+      $deleted = sfCombine::deleteAll();
+      $this->logSection(
+        'combine',
+        sprintf(
+          'Cleanup database complete (%d rows deleted)',
+          $deleted
+        ),
+        null,
+        'INFO'
+      );
     }
   }
 }
