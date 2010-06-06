@@ -28,13 +28,24 @@ class sfCombineFilter extends sfFilter
     {
       $this->context->getConfiguration()->loadHelpers(array('Tag', 'Asset', 'Url', 'sfCombine'));
       $html = '';
-      if (!sfConfig::get('symfony.asset.javascripts_included', false))
+      if (!sfConfig::get('symfony.asset.javascripts_included', false)
+        || sfConfig::get('app_sfCombinePlugin_filter_include_unused_groups', false))
       {
-        $html .= get_combined_javascripts();
+        $html .= get_combined_javascripts(
+          null,
+          sfCombineManager::GROUP_INCLUDE,
+          true
+        );
       }
-      if (!sfConfig::get('symfony.asset.stylesheets_included', false))
+
+      if (!sfConfig::get('symfony.asset.stylesheets_included', false)
+        || sfConfig::get('app_sfCombinePlugin_filter_include_unused_groups', false))
       {
-        $html .= get_combined_stylesheets();
+        $html .= get_combined_stylesheets(
+          null,
+          sfCombineManager::GROUP_INCLUDE,
+          true
+        );
       }
 
       if ($html)
@@ -43,7 +54,7 @@ class sfCombineFilter extends sfFilter
       }
     }
 
-    sfConfig::set('symfony.asset.javascripts_included', false);
-    sfConfig::set('symfony.asset.stylesheets_included', false);
+    sfConfig::set('symfony.asset.javascripts_included', true);
+    sfConfig::set('symfony.asset.stylesheets_included', true);
   }
 }
