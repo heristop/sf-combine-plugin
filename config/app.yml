@@ -1,0 +1,59 @@
+# sfCombine Config 
+
+dev:
+  sfCombinePlugin:
+    enabled:        false         # disable the plugin in development
+
+default:
+  sfCombinePlugin:
+    enabled:        true          # enabling the plugin will combine script and css files into a single file
+    asset_version:  0             # key to the asset version
+    client_cache_max_age: 10      # enable the browser to keep a copy of the files for x days (false to disable)
+    gzip:           true          # allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage
+    url_type:       key           # can be key, files, or base64 (note files can be buggy without an asset version)
+    filter_include_unused_groups: true # whether to use the filter to include groups that havent been output
+    timestamp:
+      enabled: true               # suffix a timestamp where available to files for their asset version
+      uncombinable: true          # timestamp files that aren't combinable
+    js:
+      combine: true               # whether or not to perform combining actions
+      combine_skip: ~             # these files will not be combined (necessary when js code is based on js file name)
+      include: true               # whether to allow the including of files
+      include_suffixes:           # suffixes of files that can be included
+          - .php
+      include_skip: ~             # files that should be skipped on includes
+      minify:       true          # process js files to shrink them
+      minify_method: [sfCombineMinifierJsMin, minify]
+      minify_method_options: []
+      minify_skip_suffixes:       # files with this suffix will not be minified
+          - .min.js
+      minify_skip: ~              # these files will not be minified (useful when code is already minified)
+      filename_comments: true     # include filenames of combined files in comments
+      group_files: true           # minify all available files together in one minify action
+      cache_minified_files: true  # cache minified versions of files (to not minify multiple times)
+      route: sfCombineJs          # the route name js files will use
+      inline_minify_method: ~
+      inline_minify_method_options: ~
+    css:
+      combine: true               # whether or not to perform combining actions
+      combine_skip: ~             # these files will not be combined
+      include: true               # whether to allow the including of files
+      include_suffixes:           # suffixes of files that can be included
+          - .php
+      include_skip: ~             # files that should be skipped on includes
+      minify:       true          # process js files to shrink them
+      minify_method: [sfCombineMinifierCssMin, minify]
+      minify_method_options: []
+      minify_skip_suffixes:       # files with this suffix should not be minified
+          - .min.css
+      minify_skip: ~              # these files will not be minified (useful when code is already minified)
+      filename_comments: true     # include filenames of combined files in comments
+      group_files: true           # minify all available files together in one minify action
+      route: sfCombineCss         # the route name css files will use
+      cache_minified_files: true  # cache minified versions of files (to not minify multiple times)
+      keep_charset: true          # if there is a charset in a css file keep it
+      prepend_imports: true       # move all imports to the top of a css file
+      prepend_imports_warning:    # if imports are moved a warning to output
+        Imports may be incorrectly placed, please remove for ideal combining
+      inline_minify_method: ~
+      inline_minify_method_options: ~
