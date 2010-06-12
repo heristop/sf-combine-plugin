@@ -32,7 +32,7 @@ abstract class sfCombineCombiner
    * @param   string  $file  A path to a file
    * @return  string
    */
-  abstract static public function getAssetPath($file);
+  abstract public function getAssetPath($file);
 
   /**
    * Constructs object and loads files if possible
@@ -345,12 +345,12 @@ abstract class sfCombineCombiner
         $output .= $files['contents'] . PHP_EOL;
       } else {
 
-        $minifiedContents = false;
+        $cachedMinifiedContents = $minifiedContents = false;
 
         if ($cache) {
           $key = sha1($files['contents']);
           if ($cache->has($key)) {
-            $minifedContents = $cache->get($key);
+            $cachedMinifiedContents = $minifiedContents = $cache->get($key);
           }
         }
 
@@ -361,7 +361,7 @@ abstract class sfCombineCombiner
         $output .= $minifiedContents . PHP_EOL;
 
         if ($cache) {
-          if (!$cache->has($key)) {
+          if ($minifiedContents != $cachedMinifiedContents) {
             $cache->set($key, $minifiedContents);
           }
         }
@@ -570,40 +570,17 @@ abstract class sfCombineCombiner
    *                        function method that can be called by call_user_func
    *                        to minify the content
    * @param   array         $minifyMethodOptions (Optional) Options for above method
-   * @param   string|array  $fallBackMethod (Optional) A fallback method
-   * @param   string|array  $fallBackMethodOptions (Optional) Options for above
    * @return  string
    */
   public function minify(
-    $content,
-    $minifyMethod = false,
-    array $minifyMethodOptions = array(),
-    $fallBackMethod = false,
-    array $fallBackMethodOptions = array())
+    $content, $minifyMethod = false, array $minifyMethodOptions = array()
+  )
   {
-    // get minify method from config
-    $definedMinifyMethod = $this->getConfigOption('minify_method', false);
-    $definedMinifyMethodOptions = $this->getConfigOption(
-      'minify_method_options', array()
-    );
-
-    foreach (
-      array(
-        array($minifyMethod, $minifyMethodOptions),
-        array($definedMinifyMethod, $definedMinifyMethodOptions),
-        array($fallBackMethod, $fallBackMethodOptions)
-      ) as $methodArr
-    ) {
-      $method = $methodArr[0];
-      $options = $methodArr[1];
-      
-      if ($method && is_callable($method)) {
-        $content = call_user_func($method, $content, $options);
-        break;
-      }
+    if ($minifyMethod && is_callable($minifyMethod)) {
+      return call_user_func($minifyMethod, $content, $minifyMethodOptions);
     }
 
-    return $content;
+    throw new Exception('Minify method could not be called');
   }
 
   /**
