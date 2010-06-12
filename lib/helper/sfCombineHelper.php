@@ -111,7 +111,7 @@ function get_combined_javascripts(
     $groupType,
     $onlyUnusedGroups,
     $markGroupsUsed,
-    array(sfCombineCombinerJs, 'getAssetPath')
+    array(new sfCombineCombinerJs(), 'getAssetPath')
   );
 
   $html = '';
@@ -228,7 +228,7 @@ function get_combined_stylesheets(
     $groupType,
     $onlyUnusedGroups,
     $markGroupsUsed,
-    array(sfCombineCombinerCss, 'getAssetPath')
+    array(new sfCombineCombinerCss(), 'getAssetPath')
   );
 
   $html = '';
