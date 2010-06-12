@@ -52,7 +52,9 @@ class sfCombineUrl
    */
   static public function getFileString(array $files, $separator = ' ')
   {
-    return implode($separator, array_map('urlencode', $files));
+    return urlencode(
+      implode($separator, array_map('rawurlencode', $files))
+    );
   }
 
   /**
@@ -64,7 +66,7 @@ class sfCombineUrl
    */
   static public function getFiles($fileString, $separator = ' ')
   {
-    return array_map('urldecode', explode(' ', $fileString));
+    return array_map('urldecode', explode($separator, $fileString));
   }
 
   /**
