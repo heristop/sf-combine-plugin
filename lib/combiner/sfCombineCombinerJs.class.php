@@ -13,21 +13,32 @@ class sfCombineCombinerJs extends sfCombineCombiner
    * @see sfCombineCombiner
    */
   public function minify(
-    $content, $minifyMethod = false, $minifyMethodOptions = array()
+    $content, $minifyMethod = false, array $minifyMethodOptions = array()
   )
   {
+    if (!$minifyMethod) {
+      $minifyMethod = $this->getConfigOption('minify_method', false);
+      $minifyMethodOptions = $this->getConfigOption(
+        'minify_method_options', array()
+      );
+    }
+
+    if (!$minifyMethod) {
+      $minifyMethod = array('sfCombineMinifierJsMin', 'minify');
+      $minifyMethodOptions = array();
+    }
+
     return parent::minify(
       $content,
       $minifyMethod,
-      $minifyMethodOptions,
-      array('sfCombineMinifierJsMin', 'minify')
+      is_array($minifyMethodOptions) ? $minifyMethodOptions : array()
     );
   }
 
   /**
    * @see sfCombineCombiner
    */
-  static public function getAssetPath($file)
+  public function getAssetPath($file)
   {
     sfContext::getInstance()->getConfiguration()->loadHelpers('Asset');
     return javascript_path($file);
