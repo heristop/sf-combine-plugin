@@ -11,4 +11,4 @@ sfCombineCss:
     action: css
   
 sfCombine:
-  url:  /:module/:action/*
+  url:  /sfCombine/:action/*
