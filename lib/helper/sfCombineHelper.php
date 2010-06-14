@@ -145,7 +145,9 @@ function get_combined_javascripts(
       $html .= javascript_include_tag(
         url_for(
           '@' . $route . '?module=sfCombine&action=js&'
-          . sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])
+          . sfCombineUrl::getUrlString(
+            $fileDetails['files'], $fileDetails['timestamp']
+          )
         ),
         $fileDetails['options']
       );
@@ -233,13 +235,25 @@ function get_combined_stylesheets(
 
   $html = '';
 
+  $timestampConfig = sfConfig::get('app_sfCombinePlugin_timestamp', array());
   foreach ($groupedFiles as $fileDetails) {
     if (!$fileDetails['combinable']) {
 
-      // @todo handle timestamp
+      $file = $fileDetails['files'];
+
+      if (isset($timestampConfig['uncombinable'])
+        && $timestampConfig['uncombinable']
+        && $fileDetails['timestamp']
+      ) {
+        if (strpos($file, '?') !== false) {
+          $file .= '&t=' . $fileDetails['timestamp'];
+        } else {
+          $file .= '?t=' . $fileDetails['timestamp'];
+        }
+      }
 
       $html .= stylesheet_tag(
-        stylesheet_path($fileDetails['files']),
+        stylesheet_path($file),
         $fileDetails['options']
       );
     } else {
