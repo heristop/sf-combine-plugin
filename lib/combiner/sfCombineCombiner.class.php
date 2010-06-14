@@ -64,7 +64,7 @@ abstract class sfCombineCombiner
     } else if ($base64) {
       $files = sfCombineUrl::getFilesByBase64($base64);
     } else if ($fileString) {
-      $files = sfCombineUrl::getFiles($fileString);
+      $files = sfCombineUrl::getFiles($fileString, true);
     }
     $this->setFiles($files);
 
