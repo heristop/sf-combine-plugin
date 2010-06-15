@@ -12,3 +12,5 @@ sfCombineCss:
   
 sfCombine:
   url:  /sfCombine/:action/*
+  param:
+    module: sfCombine
