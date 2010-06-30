@@ -319,6 +319,11 @@ function get_combined_assets(
 function javascript_tag_minified($content = null)
 {
   use_helper('JavascriptBase');
+
+  if (!sfConfig::get('app_sfCombinePlugin_enabled', false))
+  {
+    return javascript_tag($content);
+  }
   
   if (null === $content) {
     ob_start();
