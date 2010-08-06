@@ -288,7 +288,7 @@ function include_combined_assets(
 )
 {
   echo get_combined_assets(
-    $groups, $groupsType, $onlyUnusedGroups, $markGroupsUsed
+    $groups, $groupType, $onlyUnusedGroups, $markGroupsUsed
   );
 }
 
