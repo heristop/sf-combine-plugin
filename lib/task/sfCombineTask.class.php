@@ -45,7 +45,7 @@ EOF;
       $cache = new sfAPCCache();
       if (!ini_get('apc.enable_cli'))
       {
-        $this->logSection('combine', 'Check apc.enabled_cli in your ini file', null, 'ERROR');
+        $this->logSection('combine', 'Check apc.enable_cli in your ini file', null, 'ERROR');
         $flag = false;
       }
     }
@@ -58,6 +58,12 @@ EOF;
 
     if ($flag)
     {
+      if (! class_exists('sfCombine'))
+      {
+        $this->logSection('combine', 'Call the task `doctrine:build-model`', null, 'ERROR');
+        return false;
+      }
+      
       $results = sfCombine::getAll();
       foreach ($results as $result)
       {

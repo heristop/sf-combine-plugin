@@ -107,25 +107,24 @@ class sfCombineUrl
   /**
    * Return a hash which refers to an entry in the db describing the files
    *
-   * Based off the sfCombine _getKey method
-   *
    * @see getFileString
    */
   static public function getKey(array $files, $separator = ' ')
   {
     $content = self::getBase64($files, $separator);
-    $key = sha1($content);
-    $check = false;
+    $key     = sha1($content);
+    $check   = false;
 
-    if (function_exists('apc_store') && ini_get('apc.enabled')) {
+    if (function_exists('apc_store') && ini_get('apc.enabled'))
+    {
       $cache = new sfAPCCache();
       $check = $cache->has($key);
-    } else {
-      $cache = new sfFileCache(
-          array(
-            'cache_dir' => sfCombineUtility::getCacheDir()
-          )
-      );
+    }
+    else
+    {
+      $cache = new sfFileCache(array(
+        'cache_dir' => sfCombineUtility::getCacheDir()
+      ));
       $check = $cache->has($key);
     }
 
@@ -133,16 +132,21 @@ class sfCombineUrl
     if (false === $check)
     {
       // now just doctrine
-      $keyExists = sfCombine::hasKey($key);
-      if (!$keyExists)
+      if (class_exists('sfCombine'))
       {
-        $combine = new sfCombine();
-        $combine->setAssetKey($key);
-        $combine->setFiles($content);
-        $combine->save();
+        $keyExists = sfCombine::hasKey($key);
+        if (!$keyExists)
+        {
+          $combine = new sfCombine();
+          $combine->setAssetKey($key);
+          $combine->setFiles($content);
+          $combine->save();
+        }
       }
       $cache->set($key, $content);
     }
+    
+    
 
     return $key;
   }
@@ -155,14 +159,16 @@ class sfCombineUrl
   static public function getFilesByKey($key, $separator = ' ')
   {
     $base64 = false;
-
+  
     // try get base64 from cache
-    if (function_exists('apc_store') && ini_get('apc.enabled')) {
+    if (function_exists('apc_store') && ini_get('apc.enabled'))
+    {
       $cache = new sfAPCCache();
       $base64 = $cache->get($key);
     }
 
-    if (!$base64) {
+    if (!$base64)
+    {
       $cache = new sfFileCache(
           array(
             'cache_dir' => sfCombineUtility::getCacheDir()
@@ -171,7 +177,8 @@ class sfCombineUrl
     }
 
     // check db
-    if (!$base64) {
+    if (!$base64 && class_exists('sfCombine'))
+    {
       $combine = sfCombine::getByKey($key);
       $base64 = $combine ? $combine->getFiles() : false;
     }
