@@ -132,17 +132,20 @@ class sfCombineUrl
     if (false === $check)
     {
       // now just doctrine
-      if (class_exists('sfCombine'))
+      if (! class_exists('sfCombine'))
       {
-        $keyExists = sfCombine::hasKey($key);
-        if (!$keyExists)
-        {
-          $combine = new sfCombine();
-          $combine->setAssetKey($key);
-          $combine->setFiles($content);
-          $combine->save();
-        }
+        throw new Exception('Call the task `doctrine:build-model` or use base64 url');
       }
+      
+      $keyExists = sfCombine::hasKey($key);
+      if (!$keyExists)
+      {
+        $combine = new sfCombine();
+        $combine->setAssetKey($key);
+        $combine->setFiles($content);
+        $combine->save();
+      }
+        
       $cache->set($key, $content);
     }
     
