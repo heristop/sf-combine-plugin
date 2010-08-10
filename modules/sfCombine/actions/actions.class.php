@@ -35,8 +35,9 @@ class sfCombineActions extends sfActions
     $this->getResponse()->setContentType('application/x-javascript');
     $config = sfConfig::get('app_sfCombinePlugin_js', array());
     $combinerClass = isset($config['combiner_class'])
-                   ? $config['combiner_class']
-                   : 'sfCombineCombinerJs';
+      ? $config['combiner_class']
+      : 'sfCombineCombinerJs'
+    ;
 
     $combiner = new $combinerClass(
       $config,
@@ -55,8 +56,9 @@ class sfCombineActions extends sfActions
     $this->getResponse()->setContentType('text/css');
     $config = sfConfig::get('app_sfCombinePlugin_css', array());
     $combinerClass = isset($config['combiner_class'])
-                   ? $config['combiner_class']
-                   : 'sfCombineCombinerCss';
+      ? $config['combiner_class']
+      : 'sfCombineCombinerCss'
+    ;
 
     $combiner = new $combinerClass(
       $config,

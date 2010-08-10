@@ -31,12 +31,14 @@ function use_javascript_grouped(
   $manager = sfCombineManager::getJsManager();
 
   sfContext::getInstance()
-           ->getResponse()
-           ->addJavascript($js, $position, $options);
+    ->getResponse()
+    ->addJavascript($js, $position, $options)
+  ;
 
   $manager->addToGroup($group, $js);
 
-  if ($doNotCombine) {
+  if ($doNotCombine)
+  {
     $manager->addSkip($js);
   }
 }
@@ -97,7 +99,8 @@ function get_combined_javascripts(
   $config = sfConfig::get('app_sfCombinePlugin_js', array());
   $doNotCombine = isset($config['combine_skip'])
     ? $config['combine_skip']
-    : array();
+    : array()
+  ;
   $manager->setSkips(array_merge(
     $manager->getSkips(),
     $doNotCombine
@@ -117,19 +120,29 @@ function get_combined_javascripts(
   $html = '';
 
   $timestampConfig = sfConfig::get('app_sfCombinePlugin_timestamp', array());
-  foreach ($groupedFiles as $fileDetails) {
+  foreach ($groupedFiles as $fileDetails)
+  {
   
-    if (!$fileDetails['combinable']) {
+    if (!$fileDetails['combinable'])
+    {
 
       $file = $fileDetails['files'];
 
-      if (isset($timestampConfig['uncombinable'])
-        && $timestampConfig['uncombinable']
-        && $fileDetails['timestamp']
-      ) {
-        if (strpos($file, '?') !== false) {
+      if (
+        isset($timestampConfig['uncombinable'])
+        &&
+        $timestampConfig['uncombinable']
+        &&
+        $fileDetails['timestamp']
+      )
+      {
+        // add timestamp
+        if (strpos($file, '?') !== false)
+        {
           $file .= '&t=' . $fileDetails['timestamp'];
-        } else {
+        }
+        else
+        {
           $file .= '?t=' . $fileDetails['timestamp'];
         }
       }
@@ -138,7 +151,9 @@ function get_combined_javascripts(
         javascript_path($file),
         $fileDetails['options']
       );
-    } else {
+    }
+    else
+    {
 
       $route = isset($config['route']) ? $config['route'] : 'sfCombine';
 
@@ -170,13 +185,14 @@ function use_stylesheet_grouped(
 {
   $manager = sfCombineManager::getCssManager();
 
-  sfContext::getInstance()
-           ->getResponse()
-           ->addStylesheet($css, $position, $options);
+  sfContext::getInstance()->getResponse()->addStylesheet(
+    $css, $position, $options
+  );
 
   $manager->addToGroup($group, $css);
 
-  if ($doNotCombine) {
+  if ($doNotCombine)
+  {
     $manager->addSkip($css);
   }
 }
@@ -213,10 +229,14 @@ function get_combined_stylesheets(
   sfConfig::set('symfony.asset.stylesheets_included', true);
 
   $response = sfContext::getInstance()->getResponse();
+
   $config = sfConfig::get('app_sfCombinePlugin_css', array());
+
   $doNotCombine = isset($config['combine_skip'])
     ? $config['combine_skip']
-    : array();
+    : array()
+  ;
+
   $manager->setSkips(array_merge(
     $manager->getSkips(),
     $doNotCombine
@@ -236,18 +256,28 @@ function get_combined_stylesheets(
   $html = '';
 
   $timestampConfig = sfConfig::get('app_sfCombinePlugin_timestamp', array());
-  foreach ($groupedFiles as $fileDetails) {
-    if (!$fileDetails['combinable']) {
+
+  foreach ($groupedFiles as $fileDetails)
+  {
+    if (!$fileDetails['combinable'])
+    {
 
       $file = $fileDetails['files'];
 
-      if (isset($timestampConfig['uncombinable'])
-        && $timestampConfig['uncombinable']
-        && $fileDetails['timestamp']
-      ) {
-        if (strpos($file, '?') !== false) {
+      if (
+        isset($timestampConfig['uncombinable'])
+        &&
+        $timestampConfig['uncombinable']
+        &&
+        $fileDetails['timestamp']
+      )
+      {
+        if (strpos($file, '?') !== false)
+        {
           $file .= '&t=' . $fileDetails['timestamp'];
-        } else {
+        }
+        else
+        {
           $file .= '?t=' . $fileDetails['timestamp'];
         }
       }
@@ -256,7 +286,10 @@ function get_combined_stylesheets(
         stylesheet_path($file),
         $fileDetails['options']
       );
-    } else {
+
+    } 
+    else
+    {
 
       $route = isset($config['route']) ? $config['route'] : 'sfCombine';
 
@@ -325,15 +358,19 @@ function javascript_tag_minified($content = null)
     return javascript_tag($content);
   }
   
-  if (null === $content) {
+  if (null === $content)
+  {
     ob_start();
-
-  } else {
+  }
+  else
+  {
     // minify content
     $config = sfConfig::get('app_sfCombinePlugin_js', array());
+
     $combinerClass = isset($config['combiner_class'])
-                   ? $config['combiner_class']
-                   : 'sfCombineCombinerJs';
+      ? $config['combiner_class']
+      : 'sfCombineCombinerJs'
+    ;
 
     $combiner = new $combinerClass(
       $config
@@ -374,10 +411,12 @@ function style_tag_minified($content = null, array $elementOptions = array())
 {
   use_helper('Tag');
 
-  if (null === $content) {
+  if (null === $content)
+  {
     ob_start();
-
-  } else {
+  }
+  else
+  {
     // minify content
     $config = sfConfig::get('app_sfCombinePlugin_css', array());
     $combinerClass = isset($config['combiner_class'])
@@ -400,7 +439,8 @@ function style_tag_minified($content = null, array $elementOptions = array())
       )
     );
 
-    if (!isset($elementOptionsp['type'])) {
+    if (!isset($elementOptionsp['type']))
+    {
       $elementOptions['type'] = 'text/css';
     }
 

@@ -17,7 +17,8 @@ abstract class PluginsfCombine extends BasesfCombine
   static public function getByKey($key)
   {
     return Doctrine::getTable('sfCombine')
-      ->find($key);
+      ->find($key)
+    ;
   }
 
   /**
@@ -39,7 +40,8 @@ abstract class PluginsfCombine extends BasesfCombine
   static public function getAll()
   {
     return Doctrine::getTable('sfCombine')
-      ->findAll();
+      ->findAll()
+    ;
   }
 
   /**
@@ -51,6 +53,7 @@ abstract class PluginsfCombine extends BasesfCombine
     return Doctrine::getTable('sfCombine')
       ->createQuery()
       ->delete()
-      ->execute();
+      ->execute()
+    ;
   }
 }

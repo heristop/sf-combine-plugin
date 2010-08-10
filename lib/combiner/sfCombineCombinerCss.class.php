@@ -16,14 +16,16 @@ class sfCombineCombinerCss extends sfCombineCombiner
     $content, $minifyMethod = false, array $minifyMethodOptions = array()
   )
   {
-    if (!$minifyMethod) {
+    if (!$minifyMethod)
+    {
       $minifyMethod = $this->getConfigOption('minify_method', false);
       $minifyMethodOptions = $this->getConfigOption(
         'minify_method_options', array()
       );
     }
 
-    if (!$minifyMethod) {
+    if (!$minifyMethod)
+    {
       $minifyMethod = array('sfCombineMinifierCssMin', 'minify');
       $minifyMethodOptions = array();
     }
@@ -75,7 +77,8 @@ class sfCombineCombinerCss extends sfCombineCombiner
     // @todo @imports
 
     // fix url paths
-    foreach ($fileContents as $file => $contents) {
+    foreach ($fileContents as $file => $contents)
+    {
       $fileContents[$file] = self::rewriteUris(
         $this->getAssetPath($file), $contents
       );
@@ -154,11 +157,14 @@ class sfCombineCombinerCss extends sfCombineCombiner
 
     preg_match_all('/@charset.*?;/i', $removedComments, $matches);
 
-    if ($matches[0]) {
+    if ($matches[0])
+    {
       // remove charsets
       $content = str_replace($matches[0], '', $content);
       return $matches[0][0] . PHP_EOL . $content;
-    } else {
+    }
+    else
+    {
       return $content;
     }
   }
@@ -191,15 +197,18 @@ class sfCombineCombinerCss extends sfCombineCombiner
 
     preg_match_all('/@import.*?;/', $removedComments, $matches);
 
-    if ($matches[0]) {
+    if ($matches[0])
+    {
 
-      return ($prependWarning ? "/* $prependWarning */" : '') . PHP_EOL
-             . ($includeImports ? implode('', $matches[0]) . PHP_EOL : '')
-             . str_replace($matches[0], '', $content);
-    } else {
+      return 
+        ($prependWarning ? "/* $prependWarning */" : '') . "\n"
+        . ($includeImports ? implode('', $matches[0]) . "\n" : '')
+        . str_replace($matches[0], '', $content)
+      ;
+    }
+    else
+    {
       return $content;
     }
-
-    
   }
 }

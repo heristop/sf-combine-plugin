@@ -59,13 +59,19 @@ abstract class sfCombineCombiner
 
     $files = array();
 
-    if ($key) {
+    if ($key)
+    {
       $files = sfCombineUrl::getFilesByKey($key);
-    } else if ($base64) {
+    } 
+    else if ($base64)
+    {
       $files = sfCombineUrl::getFilesByBase64($base64);
-    } else if ($fileString) {
+    }
+    else if ($fileString)
+    {
       $files = sfCombineUrl::getFiles($fileString, true);
     }
+
     $this->setFiles($files);
 
   }
@@ -205,9 +211,10 @@ abstract class sfCombineCombiner
 
     foreach ($this->getFiles() as $file)
     {
-      if (array_key_exists($file, $oldFileContents)) {
-          $fileContents[$file] = $oldFileContents[$file];
-          continue;
+      if (array_key_exists($file, $oldFileContents))
+      {
+        $fileContents[$file] = $oldFileContents[$file];
+        continue;
       }
 
       $assetPath = $this->getAssetPath($file);
@@ -216,73 +223,95 @@ abstract class sfCombineCombiner
       $fileParts = explode('?', $assetPath);
       $fileName = $fileParts[0];
 
-      try {
-
+      try
+      {
         $filePath = sfCombineUtility::getFilePath($fileName);
 
-        if ( ! $filePath) {
+        if (!$filePath)
+        {
           throw new Exception($fileName . ' does not exist');
         }
 
-        if (! is_readable($filePath)) {
+        if (!is_readable($filePath))
+        {
           throw new Exception($filePath . ' is not readable');
         }
 
         $includeFile = false;
 
-        if ($allowIncludes) {
+        if ($allowIncludes)
+        {
           // check to see if we are to include this file or get contents
-          if (is_array($includeSuffixes)) {
-            foreach ($includeSuffixes as $suffix) {
-              if ((strlen($filePath) > strlen($suffix))
-              && (substr($filePath, strlen($filePath) - strlen($suffix)) == $suffix)
-              ) {
+          if (is_array($includeSuffixes))
+          {
+            foreach ($includeSuffixes as $suffix)
+            {
+              if (
+                (strlen($filePath) > strlen($suffix))
+                &&
+                (substr($filePath, strlen($filePath) - strlen($suffix)) == $suffix)
+              )
+              {
                 $includeFile = true;
                 break;
               }
             }
           }
 
-
           // check if file is blacklisted from being included
-          if (is_array($dontInclude)) {
+          if (is_array($dontInclude))
+          {
             $nonAssetParts = explode('?', $file);
             $nonAssetName = $nonAssetParts[0];
 
-            foreach ($dontInclude as $name) {
-              if (($name == $fileName)
-              || ($name == $assetPath)
-              || ($name == $file)
-              || ($name == $nonAssetName)) {
+            foreach ($dontInclude as $name)
+            {
+              if (
+                ($name == $fileName)
+                ||
+                ($name == $assetPath)
+                ||
+                ($name == $file)
+                ||
+                ($name == $nonAssetName)
+              )
+              {
                 $includeFile = false;
                 break;
               }
             }
           }
-        }
+        } // end if
 
-        if ($includeFile) {
+        if ($includeFile)
+        {
 
           // set gets
           $gets = array();
 
-          if (isset($fileParts[1])) {
+          if (isset($fileParts[1]))
+          {
             parse_str($fileParts[1], $gets);
           }
 
           $contents = self::getIncludeFileContents($filePath, true, $gets);
 
-        } else {
+        }
+        else
+        {
           $contents = @file_get_contents($filePath);
 
-          if ($contents === false) {
+          if ($contents === false)
+          {
             throw new Exception('Could not open ' . $filePath);
           }
         }
 
         $fileContents[$file] = $contents;
 
-      } catch (Exception $e) {
+      } 
+      catch (Exception $e)
+      {
         sfContext::getInstance()->getLogger()->err(
             'sfCombine exception: ' . $e->getMessage()
         );
@@ -320,48 +349,58 @@ abstract class sfCombineCombiner
     );
 
     $cache = false;
-    if ($this->getConfigOption('cache_minified_files', false)) {
-      $cache = new sfFileCache(
-          array(
-            'cache_dir' => $this->getCacheDir()
-          )
-      );
+    if ($this->getConfigOption('cache_minified_files', false))
+    {
+      $cache = new sfFileCache(array('cache_dir' => $this->getCacheDir()));
     }
 
     $output = '';
 
     $fileNameComments = $this->getConfigOption('filename_comments', false);
 
-    foreach ($minifiable as $files) {
+    foreach ($minifiable as $files)
+    {
 
-      if ($fileNameComments) {
-        if ($output) {
+      if ($fileNameComments)
+      {
+        if ($output)
+        {
           $output .= PHP_EOL;
         }
         $output .= $this->_addFilenameComments($files['files']);
       }
       
-      if (!$files['minify']) {
+      if (!$files['minify'])
+      {
         $output .= $files['contents'] . PHP_EOL;
-      } else {
-
+      }
+      else
+      {
         $cachedMinifiedContents = $minifiedContents = false;
 
-        if ($cache) {
+        // check cache for minified contents
+        if ($cache)
+        {
           $key = sha1($files['contents']);
-          if ($cache->has($key)) {
+          if ($cache->has($key))
+          {
             $cachedMinifiedContents = $minifiedContents = $cache->get($key);
           }
         }
 
-        if ($minifiedContents === false) {
+        // minify the files
+        if ($minifiedContents === false)
+        {
           $minifiedContents = $this->minify($files['contents']);
         }
 
         $output .= $minifiedContents . PHP_EOL;
 
-        if ($cache) {
-          if ($minifiedContents != $cachedMinifiedContents) {
+        // set the cache if its changed or been set during this method
+        if ($cache)
+        {
+          if ($minifiedContents != $cachedMinifiedContents)
+          {
             $cache->set($key, $minifiedContents);
           }
         }
@@ -370,7 +409,6 @@ abstract class sfCombineCombiner
     }
 
     return $output;
-
   }
 
   /**
@@ -406,46 +444,58 @@ abstract class sfCombineCombiner
     $groupedMinify = array();
     $groupedContents = '';
     
-    foreach ($fileContents as $file => $contents) {
+    foreach ($fileContents as $file => $contents)
+    {
       
       $canMinify = true;
       
       // check if we can minify file
       
-      if (!$minify) {
+      if (!$minify)
+      {
         $canMinify = false;
       }
 
       // check suffix
-      if ($canMinify && is_array($minifySkipSuffixes)) {
-          $fileParts = explode('?', $file);
-          $fileName = $fileParts[0];
+      if ($canMinify && is_array($minifySkipSuffixes))
+      {
+        $fileParts = explode('?', $file);
+        $fileName = $fileParts[0];
 
-          foreach ($minifySkipSuffixes as $suffix) {
-            if ((strlen($fileName) > strlen($suffix))
-            && (substr($fileName, strlen($fileName) - strlen($suffix)) == $suffix)
-            ) {
-              $canMinify = false;
-              break;
-            }
+        foreach ($minifySkipSuffixes as $suffix)
+        {
+          if (
+            (strlen($fileName) > strlen($suffix))
+            &&
+            (substr($fileName, strlen($fileName) - strlen($suffix)) == $suffix)
+          )
+          {
+            $canMinify = false;
+            break;
           }
-
+        }
       }
 
       // check file isn't to be skipped
-      if ($canMinify && is_array($minifySkip)) {
-
+      if ($canMinify && is_array($minifySkip))
+      {
         $assetPath = $this->getAssetPath($file);
 
         // break off any query string in the name
         $fileParts = explode('?', $assetPath);
         $assetPathFileName = $fileParts[0];
 
-        foreach ($minifySkip as $name) {
-          if (($name == $fileName)
-          || ($name == $file)
-          || ($name == $assetPathFileName)
-          || ($name == $assetPath)) {
+        foreach ($minifySkip as $name)
+        {
+          if (
+            ($name == $fileName)
+            ||
+            ($name == $file)
+            ||
+            ($name == $assetPathFileName)
+            ||
+            ($name == $assetPath)
+          ) {
             $canMinify = false;
             break;
           }
@@ -454,18 +504,23 @@ abstract class sfCombineCombiner
       
       
       // add file to return array
-      if ($canMinify && $groupFiles) {
+      if ($canMinify && $groupFiles)
+      {
         $groupedMinify[] = $file;
 
-        if ($groupedContents) {
+        if ($groupedContents)
+        {
           $groupedContents .= PHP_EOL;
         }
 
         $groupedContents .= $contents;
 
-      } else {
+      } 
+      else
+      {
         
-        if ($groupedMinify) {
+        if ($groupedMinify)
+        {
           // add groups to return
           
           $return[] = array(
@@ -487,10 +542,10 @@ abstract class sfCombineCombiner
         );
         
       }
-      
     }
     
-    if ($groupedMinify) {
+    if ($groupedMinify)
+    {
       $return[] = array(
         'files' => $groupedMinify,
         'contents' => $groupedContents,
@@ -531,7 +586,8 @@ abstract class sfCombineCombiner
   )
   {
     // change what we can of gets
-    if ($setGets) {
+    if ($setGets)
+    {
       $request = sfContext::getInstance()->getRequest();
 
       $currentGet = $_GET;
@@ -549,12 +605,14 @@ abstract class sfCombineCombiner
     ob_end_clean();
 
     // reset gets
-    if ($setGets) {
-          $_GET = $currentGet;
-          $request->addRequestParameters($requestParameters);
+    if ($setGets)
+    {
+      $_GET = $currentGet;
+      $request->addRequestParameters($requestParameters);
     }
 
-    if ($contents == false) {
+    if ($contents == false)
+    {
       throw new Exception('Could not output buffer ' . $filePath);
     }
 
@@ -576,7 +634,8 @@ abstract class sfCombineCombiner
     $content, $minifyMethod = false, array $minifyMethodOptions = array()
   )
   {
-    if ($minifyMethod && is_callable($minifyMethod)) {
+    if ($minifyMethod && is_callable($minifyMethod))
+    {
       return call_user_func($minifyMethod, $content, $minifyMethodOptions);
     }
 
@@ -594,7 +653,8 @@ abstract class sfCombineCombiner
   {
     $return = '';
 
-    foreach ($files as $fileName) {
+    foreach ($files as $fileName)
+    {
       $return .= '/* ' . $fileName . ' */'. PHP_EOL;
     }
 

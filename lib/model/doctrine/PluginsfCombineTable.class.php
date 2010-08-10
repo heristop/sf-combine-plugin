@@ -7,13 +7,13 @@
  */
 class PluginsfCombineTable extends Doctrine_Table
 {
-    /**
-     * Returns an instance of this class.
-     *
-     * @return object PluginsfCombineTable
-     */
-    public static function getInstance()
-    {
-        return Doctrine_Core::getTable('PluginsfCombine');
-    }
+  /**
+   * Returns an instance of this class.
+   *
+   * @return object PluginsfCombineTable
+   */
+  public static function getInstance()
+  {
+    return Doctrine_Core::getTable('PluginsfCombine');
+  }
 }

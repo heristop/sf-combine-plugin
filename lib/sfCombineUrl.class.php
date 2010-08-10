@@ -17,7 +17,8 @@ class sfCombineUrl
    */
   static public function getUrlString($files, $timestamp)
   {
-    switch(sfConfig::get('app_sfCombinePlugin_url_type', 'key')) {
+    switch(sfConfig::get('app_sfCombinePlugin_url_type', 'key'))
+    {
       case 'files':
         $string = 'files=' . self::getFileString($files);
         break;
@@ -31,12 +32,14 @@ class sfCombineUrl
 
     }
 
-    if (sfConfig::get('app_sfCombinePlugin_asset_version', false)) {
+    if (sfConfig::get('app_sfCombinePlugin_asset_version', false))
+    {
       $string .= '&v='
-               . sfConfig::get('app_sfCombinePlugin_asset_version');
+              . sfConfig::get('app_sfCombinePlugin_asset_version');
     }
 
-    if ($timestamp) {
+    if ($timestamp)
+    {
       $string .= '&t=' . $timestamp;
     }
 
@@ -68,7 +71,8 @@ class sfCombineUrl
     $fileString, $urlDecoded = false, $separator = ' '
   )
   {
-    if (!$urlDecoded) {
+    if (!$urlDecoded)
+    {
       $fileString = urldecode($fileString);
     }
 
@@ -94,9 +98,11 @@ class sfCombineUrl
   {
     $string = false;
 
-    if ($base64) {
+    if ($base64)
+    {
       $string = base64_decode($base64);
     }
+
     return self::getFiles(
       $string ? $string : '',
       false,
@@ -172,10 +178,9 @@ class sfCombineUrl
 
     if (!$base64)
     {
-      $cache = new sfFileCache(
-          array(
-            'cache_dir' => sfCombineUtility::getCacheDir()
-          ));
+      $cache = new sfFileCache(array(
+        'cache_dir' => sfCombineUtility::getCacheDir()
+      ));
       $base64 = $cache->get($key);
     }
 

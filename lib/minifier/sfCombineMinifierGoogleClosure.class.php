@@ -51,7 +51,8 @@ implements sfCombineMinifierInterface
 
     $jarLocation = $options['jar_location'];
 
-    if (!file_exists($jarLocation)) {
+    if (!file_exists($jarLocation))
+    {
       throw new Exception('Google Closure Jar file does not exist');
     }
 
@@ -60,11 +61,13 @@ implements sfCombineMinifierInterface
     $command = 'java -jar ' 
              . $jarLocation . ' '
              . $this->_buildCommandOptions() . ' '
-             . '--js ' . escapeshellarg($tempFile);
+             . '--js ' . escapeshellarg($tempFile)
+    ;
 
     exec($command, $output, $return);
     
-    if ($return !== 0) {
+    if ($return !== 0)
+    {
       throw new Exception('Google Closure Compiler returned error', $return);
     }
 
@@ -83,11 +86,13 @@ implements sfCombineMinifierInterface
 
     $commandOptions = '';
 
-    if (isset($options['charset']) && $options['charset']) {
+    if (isset($options['charset']) && $options['charset'])
+    {
       $commandOptions .= ' --charset ' . $options['charset'];
     }
 
-    if (isset($options['compilation_level']) && $options['compilation_level']) {
+    if (isset($options['compilation_level']) && $options['compilation_level'])
+    {
       $commandOptions .= ' --compilation_level ' . $options['compilation_level'];
     }
 

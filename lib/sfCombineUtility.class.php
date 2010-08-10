@@ -24,8 +24,12 @@ class sfCombineUtility
   static public function combinableFile($file, array $doNotCombine = array())
   {
     // check for a remote or file we've specified not to combine
-    if (strpos($file, '://')
-    || self::skipAsset($file, $doNotCombine)) {
+    if (
+      strpos($file, '://')
+      ||
+      self::skipAsset($file, $doNotCombine)
+    )
+    {
       return false;
     }
 
@@ -33,14 +37,17 @@ class sfCombineUtility
     $fileParts = explode('?', $file);
     $file = $fileParts[0];
 
-    if (self::skipAsset($file, $doNotCombine)) {
+    if (self::skipAsset($file, $doNotCombine))
+    {
       return false;
     }
 
     // check absolute file exists
-    if ((0 === strpos($file, '/'))
-    && !self::getFilePath($file)
-    ) {
+    if (
+      (0 === strpos($file, '/'))
+      && !self::getFilePath($file)
+    )
+    {
       return false;
     }
 
@@ -57,11 +64,13 @@ class sfCombineUtility
   static public function getModifiedTimestamp($file, $assetPathMethod)
   {
     // prefix asset path (if applicable)
-    if ($assetPathMethod && is_callable($assetPathMethod)) {
+    if ($assetPathMethod && is_callable($assetPathMethod))
+    {
       $file = call_user_func($assetPathMethod, $file);
     }
 
-    if (!self::combinableFile($file, array())) {
+    if (!self::combinableFile($file, array()))
+    {
       return 0;
     }
 
@@ -69,10 +78,12 @@ class sfCombineUtility
     $file = $fileParts[0];
     $filePath = self::getFilePath($file);
 
-    if ($filePath) {
+    if ($filePath)
+    {
       $lastModified = filemtime($filePath);
 
-      if ($lastModified) {
+      if ($lastModified)
+      {
         return $lastModified;
       }
     }
@@ -93,8 +104,10 @@ class sfCombineUtility
       sfConfig::get('sf_symfony_data_dir') . '/web' . $file
     );
 
-    foreach ($paths as $path) {
-      if (file_exists($path)) {
+    foreach ($paths as $path)
+    {
+      if (file_exists($path))
+      {
         return $path;
       }
     }
@@ -121,11 +134,9 @@ class sfCombineUtility
    */
   static public function getCacheDir()
   {
-    return sfConfig::get('sf_cache_dir') . '/'
-                         . sfConfig::get(
-                           'app_sfCombinePlugin_cache_dir',
-                           'sfCombine'
-                         );
+    return sfConfig::get('sf_cache_dir') . '/' 
+      . sfConfig::get('app_sfCombinePlugin_cache_dir','sfCombine')
+    ;
   }
 
   /**
@@ -137,8 +148,11 @@ class sfCombineUtility
   static public function setGzip()
   {
     // gzip compression
-    if (sfConfig::get('app_sfCombinePlugin_gzip', true)
-    && !self::_checkGzipFail()) {
+    if (
+      sfConfig::get('app_sfCombinePlugin_gzip', true)
+      && !self::_checkGzipFail()
+    )
+    {
       ob_start("ob_gzhandler");
     }
   }
@@ -173,14 +187,17 @@ class sfCombineUtility
   {
     $userAgent = $_SERVER['HTTP_USER_AGENT'];
 
-    if (strpos($userAgent, 'Mozilla/4.0 (compatible; MSIE ') !== 0 
-    || strpos($userAgent, 'Opera') !== false) {
+    if (
+      strpos($userAgent, 'Mozilla/4.0 (compatible; MSIE ') !== 0
+      ||
+      strpos($userAgent, 'Opera') !== false
+    )
+    {
       return false;
     }
     
     $version = floatval(substr($userAgent, 30));
 
-    return $version < 6
-      || ($version == 6 && strpos($userAgent, 'SV1') === false);
+    return $version < 6 || ($version == 6 && strpos($userAgent, 'SV1') === false);
   }
 }

@@ -16,14 +16,16 @@ class sfCombineCombinerJs extends sfCombineCombiner
     $content, $minifyMethod = false, array $minifyMethodOptions = array()
   )
   {
-    if (!$minifyMethod) {
+    if (!$minifyMethod)
+    {
       $minifyMethod = $this->getConfigOption('minify_method', false);
       $minifyMethodOptions = $this->getConfigOption(
         'minify_method_options', array()
       );
     }
 
-    if (!$minifyMethod) {
+    if (!$minifyMethod)
+    {
       $minifyMethod = array('sfCombineMinifierJsMin', 'minify');
       $minifyMethodOptions = array();
     }
@@ -51,7 +53,7 @@ class sfCombineCombinerJs extends sfCombineCombiner
    */
   static public function getCacheDir()
   {
-    return parent::getCacheDir() .  '/js';
+    return parent::getCacheDir() . '/js';
   }
 
   /**
@@ -65,7 +67,7 @@ class sfCombineCombinerJs extends sfCombineCombiner
     $return = '';
 
     foreach ($files as $fileName) {
-      $return .= '// ' . $fileName . PHP_EOL;
+      $return .= '// ' . $fileName . "\n";
     }
 
     return $return;

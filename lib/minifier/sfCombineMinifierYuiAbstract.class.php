@@ -38,7 +38,8 @@ extends sfCombineMinifierTempFileAbstract
 
     $jarLocation = $options['jar_location'];
 
-    if (!file_exists($jarLocation)) {
+    if (!file_exists($jarLocation))
+    {
       throw new Exception('YUI Jar file does not exist');
     }
 
@@ -48,11 +49,13 @@ extends sfCombineMinifierTempFileAbstract
              . $jarLocation . ' '
              . '--type ' . $this->_getType() . ' '
              . $this->_buildCommandOptions() . ' '
-             . escapeshellarg($tempFile);
+             . escapeshellarg($tempFile)
+    ;
 
     exec($command, $output, $return);
 
-    if ($return !== 0) {
+    if ($return !== 0)
+    {
       throw new Exception('YUI Compressor returned error', $return);
     }
 
@@ -71,11 +74,13 @@ extends sfCombineMinifierTempFileAbstract
 
     $commandOptions = '';
 
-    if (isset($options['charset']) && $options['charset']) {
+    if (isset($options['charset']) && $options['charset'])
+    {
       $commandOptions .= ' --charset ' . $options['charset'];
     }
 
-    if (isset($options['line_break']) && $options['line_break']) {
+    if (isset($options['line_break']) && $options['line_break'])
+    {
       $commandOptions .= ' --line-break ' . $options['line_break'];
     }
 

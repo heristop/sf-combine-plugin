@@ -28,8 +28,9 @@ abstract class sfCombineMinifierTempFileAbstract
   {
     $defaultOptions = $this->getDefaultOptions();
 
-    $this->setContent($content)
-         ->setOptions(array_merge($defaultOptions, $options));
+    $this->setContent($content)->setOptions(
+      array_merge($defaultOptions, $options)
+    );
   }
 
   /**
@@ -41,21 +42,24 @@ abstract class sfCombineMinifierTempFileAbstract
    */
   public function execute()
   {
-    try {
+    try
+    {
 
       $tempFile = $this->createTempFile();
       $minified = $this->_process($tempFile);
       $this->deleteTempFile($tempFile);
-      return $minified;
+    }
+    catch (Exception $e)
+    {
 
-    } catch (Exception $e) {
-
-      if ($tempFile) {
+      if ($tempFile)
+      {
         $this->deleteTempFile($tempFile);
         throw $e;
       }
-
     }
+
+    return $minified;
   }
 
   /**
@@ -127,13 +131,15 @@ abstract class sfCombineMinifierTempFileAbstract
       (isset($options['tempPrefix']) ? $options['tempPrefix'] : '')
     );
 
-    if (!$tempFile) {
+    if (!$tempFile)
+    {
       throw new Exception('Temporary file could not be created');
     }
 
     $result = file_put_contents($tempFile, $this->getContent());
 
-    if ($result === false) {
+    if ($result === false)
+    {
       throw new Exception('Writing to temporary file failed');
     }
 

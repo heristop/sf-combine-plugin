@@ -57,20 +57,27 @@ implements sfCombineMinifierInterface
 
     $parentOptions = parent::_buildCommandOptions();
 
-    if ($parentOptions) {
+    if ($parentOptions)
+    {
       $commandOptions .= ' ' . $parentOptions;
     }
 
-    if (isset($options['nomunge']) && $options['nomunge']) {
+    if (isset($options['nomunge']) && $options['nomunge'])
+    {
       $commandOptions .= ' --nomunge';
     }
 
-    if (isset($options['preserve_semi']) && $options['preserve_semi']) {
+    if (isset($options['preserve_semi']) && $options['preserve_semi'])
+    {
       $commandOptions .= ' --preserve-semi';
     }
-    if (isset($options['disable_optimizations'])
-      && $options['disable_optimizations']
-    ) {
+
+    if (
+      isset($options['disable_optimizations'])
+      &&
+      $options['disable_optimizations']
+    )
+    {
       $commandOptions .= ' --disable-optimizations';
     }
 

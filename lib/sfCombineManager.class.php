@@ -58,7 +58,8 @@ class sfCombineManager
    */
   static public function getJsManager()
   {
-    if (self::$_jsManager === null) {
+    if (self::$_jsManager === null)
+    {
       self::$_jsManager = new self();
     }
     return self::$_jsManager;
@@ -71,7 +72,8 @@ class sfCombineManager
    */
   static public function getCssManager()
   {
-    if (self::$_cssManager === null) {
+    if (self::$_cssManager === null)
+    {
       self::$_cssManager = new self();
     }
     return self::$_cssManager;
@@ -137,10 +139,15 @@ class sfCombineManager
    */
   public function removeFromGroup($groupName, $file)
   {
-    if (array_key_exists($file, $this->_groups)
-    && $this->_groups[$file] == $groupName) {
+    if (
+      array_key_exists($file, $this->_groups)
+      &&
+      $this->_groups[$file] == $groupName
+    )
+    {
       unset($this->_groups[$file]);
     }
+
     return $this;
   }
 
@@ -186,7 +193,8 @@ class sfCombineManager
    */
   public function removeFromSkips($file)
   {
-    foreach (array_keys($this->_skips, $file) as $key) {
+    foreach (array_keys($this->_skips, $file) as $key)
+    {
       unset($this->_skips[$key]);
     }
     return $this;
@@ -236,16 +244,20 @@ class sfCombineManager
   {
     $usedGroups = $this->getUsedGroups();
 
-    if (is_string($groups)) {
+    if (is_string($groups))
+    {
       $groups = array($groups);
     }
 
-    if (($groups !== null) && ($groupsType === self::GROUP_INCLUDE)) {
+    if (($groups !== null) && ($groupsType === self::GROUP_INCLUDE))
+    {
       // only allow specific groups
 
       $usedGroups = array_merge($usedGroups, $groups);
 
-    } else if (($groups === null) || ($groupsType === self::GROUP_EXCLUDE)) {
+    } 
+    else if (($groups === null) || ($groupsType === self::GROUP_EXCLUDE))
+    {
       // only exclude specific groups
 
       $toMerge = array_diff(
@@ -305,9 +317,11 @@ class sfCombineManager
 
     $return = array();
 
-    foreach($assets as $file => $options) {
+    foreach($assets as $file => $options)
+    {
       // check asset still needs to be added
-      if (!array_key_exists($file, $assets)) {
+      if (!array_key_exists($file, $assets))
+      {
         continue;
       }
 
@@ -316,24 +330,31 @@ class sfCombineManager
                ? $groupData[$file]
                : '';
 
-      if ($groupsUse !== null) {
+      if ($groupsUse !== null)
+      {
 
-        if (is_string($groupsUse)) {
+        if (is_string($groupsUse))
+        {
           $groupsUse = array($groupsUse);
         }
 
-        if ($groupsUseType === self::GROUP_INCLUDE) {
+        if ($groupsUseType === self::GROUP_INCLUDE)
+        {
           
           // only allow specific groups
-          if (!in_array($group, $groupsUse)) {
+          if (!in_array($group, $groupsUse))
+          {
             // don't include this group
             continue;
           }
 
-        } else if ($groupsUseType === self::GROUP_EXCLUDE) {
+        }
+        else if ($groupsUseType === self::GROUP_EXCLUDE)
+        {
 
           // only exclude specific groups
-          if (in_array($group, $groupsUse)) {
+          if (in_array($group, $groupsUse))
+          {
             // don't include this group
             continue;
           }
@@ -343,7 +364,8 @@ class sfCombineManager
       }
 
       // don't output a used group
-      if ($onlyUnusedGroups && in_array($group, $this->getUsedGroups())) {
+      if ($onlyUnusedGroups && in_array($group, $this->getUsedGroups()))
+      {
         continue;
       }
 
@@ -352,14 +374,21 @@ class sfCombineManager
         isset($timestampConfig['enabled']) && $timestampConfig['enabled']
       ;
 
-      if (!$combine
-      || !sfCombineUtility::combinableFile($file, $this->getSkips())) {
+      if (
+        !$combine
+        ||
+        !sfCombineUtility::combinableFile($file, $this->getSkips())
+      )
+      {
 
-        if ($timestampEnabled) {
+        if ($timestampEnabled)
+        {
           $timestamp = sfCombineUtility::getModifiedTimestamp(
             $file, $assetPathMethod
           );
-        } else {
+        }
+        else
+        {
           $timestamp = 0;
         }
 
@@ -371,46 +400,61 @@ class sfCombineManager
           'timestamp' => $timestamp
         );
         unset($assets[$file]);
-      } else {
+      } 
+      else
+      {
 
         // get the group this file is in
         $group = array_key_exists($file, $groupData)
-                 ? $groupData[$file]
-                 : '';
+          ? $groupData[$file]
+          : ''
+        ;
 
         $combinedFiles = array($file);
 
         // get timestamp
-        if ($timestampEnabled) {
+        if ($timestampEnabled)
+        {
           $timestamp = sfCombineUtility::getModifiedTimestamp(
             $file, $assetPathMethod
           );
-        } else {
+        } 
+        else
+        {
           $timestamp = 0;
         }
 
         unset($assets[$file]);
 
-        foreach ($assets as $groupedFile => $groupedOptions) {
+        foreach ($assets as $groupedFile => $groupedOptions)
+        {
 
-          if (!sfCombineUtility::combinableFile($groupedFile, $this->getSkips())
-          || $options != $groupedOptions) {
+          if (
+            !sfCombineUtility::combinableFile($groupedFile, $this->getSkips())
+            ||
+            $options != $groupedOptions
+          )
+          {
             continue;
           }
 
           $groupedFileGroup = array_key_exists($groupedFile, $groupData)
-                              ? $groupData[$groupedFile]
-                              : '';
+            ? $groupData[$groupedFile]
+            : ''
+          ;
 
           // add this file to this combine
-          if ($group == $groupedFileGroup) {
+          if ($group == $groupedFileGroup)
+          {
 
-            if ($timestampEnabled) {
+            if ($timestampEnabled)
+            {
               $groupedTimestamp = sfCombineUtility::getModifiedTimestamp(
                 $groupedFile, $assetPathMethod
               );
 
-              if ($groupedTimestamp > $timestamp) {
+              if ($groupedTimestamp > $timestamp)
+              {
                 $timestamp = $groupedTimestamp;
               }
             }
@@ -429,7 +473,8 @@ class sfCombineManager
       }
     }
 
-    if ($markGroupsUsed) {
+    if ($markGroupsUsed)
+    {
       $this->updateUsedGroups($groupsUse, $groupsUseType);
     }
 
