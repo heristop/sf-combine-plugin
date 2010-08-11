@@ -4,7 +4,7 @@
  *
  * @package    sfCombinePlugin
  * @subpackage combiner
- * @author     Alexandre Mogères
+ * @author     Alexandre Mogère
  * @author     Kevin Dew <kev@dewsolutions.co.uk>
  *
  */
