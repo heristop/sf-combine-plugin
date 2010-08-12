@@ -16,4 +16,18 @@ class PluginsfCombineTable extends Doctrine_Table
   {
     return Doctrine_Core::getTable('PluginsfCombine');
   }
+
+  /**
+   * Delete all the records in the db
+   * 
+   * @return int
+   */
+  public function deleteAll()
+  {
+    return $this
+      ->createQuery()
+      ->delete()
+      ->execute()
+    ;
+  }
 }

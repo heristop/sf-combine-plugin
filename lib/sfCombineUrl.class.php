@@ -143,7 +143,7 @@ class sfCombineUrl
         throw new Exception('Call the task `doctrine:build-model` or use base64 url');
       }
       
-      $keyExists = sfCombine::hasKey($key);
+      $keyExists = Doctrine::getTable('sfCombine')->find($key);
       if (!$keyExists)
       {
         $combine = new sfCombine();
@@ -187,7 +187,7 @@ class sfCombineUrl
     // check db
     if (!$base64 && class_exists('sfCombine'))
     {
-      $combine = sfCombine::getByKey($key);
+      $combine = Doctrine::getTable('sfCombine')->find($key);
       $base64 = $combine ? $combine->getFiles() : false;
     }
 

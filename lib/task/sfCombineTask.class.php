@@ -64,14 +64,14 @@ EOF;
         return false;
       }
       
-      $results = sfCombine::getAll();
+      $results = Doctrine::getTable('sfCombine')->findAll();
       foreach ($results as $result)
       {
         $cache->remove($result->getAssetKey());
       }
 
       $this->logSection('combine', 'Cleanup cache complete', null, 'INFO');
-      $deleted = sfCombine::deleteAll();
+      $deleted = Doctrine::getTable('sfCombine')->deleteAll();
       $this->logSection(
         'combine',
         sprintf(
