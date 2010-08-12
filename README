@@ -3,7 +3,7 @@ sfCombinePlugin
 
 sfCombinePlugin combines multiple JavaScript and CSS files into grouped JavaScript and CSS files at runtime, in order to 
 minimize the number of HTTP requests required to render a given page. If you want to know why this is essential for your 
-website performance, read [Yahoo's Best Practices](http://developer.yahoo.com/performance/rules.html).
+website performance, read [Yahoo's Performance Research Findings](http://yuiblog.com/blog/2006/11/28/performance-research-part-1/).
 
 Without sfCombinePlugin, a typical page requires many HTTP requests to get JavaScript and CSS files:
 
@@ -76,7 +76,6 @@ Installation
    Then, depending on your database engine, use the SQL code generated in 
    `data/sql/plugins.sfCombinePlugin.lib.model.schema.sql` to insert the table in the database. For instance, for mySQL:
 
-   
         > mysql -u username -p dbname < data/sql/plugins.sfCombinePlugin.lib.model.schema.sql
 
     For Doctrine, you need to call this task `doctrine:build-sql`.
@@ -91,53 +90,58 @@ Installation
 
 5. Replacing JavaScript and CSS calls in the layout
 
-    Since symfony 1.3, the layout uses the regular `include_javascripts()` and `include_stylesheets()` helpers to output calls to 
-    the JavaScript and CSS files.
+    Since symfony 1.3, the layout uses the regular `include_javascripts()` and `include_stylesheets()` helpers to output calls
+    to the JavaScript and CSS files.
 
     Replace them with the `include_combined_javascripts()` and the `include_combined_stylesheets()` helpers. They belong to
     the `sfCombine` helper group, which must be declared prior to calling the helpers:
         
-            [php]
-            // in apps/frontend/templates/layout.php
-            <?php use_helper('sfCombine') ?>
-            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
-            "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-            <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-            <head>
-              <?php include_http_metas() ?>
-              <?php include_metas() ?>
-              <?php include_title() ?>
-              <link rel="shortcut icon" href="/favicon.ico" />
-              <?php include_combined_stylesheets() ?>
-              <!-- This is where the common filter will place <link> tags -->
-              <!--[if lte IE 6]>
-                <?php echo stylesheet_tag('ie6.css') ?>
-              <![endif]-->
-            </head>
-            <body>
-              <?php echo $sf_flash->getRaw('notice') ?>
-              <?php echo include_combined_javascripts() ?>
-              <!-- This is where the common filter will place <script> tags -->
-            </body>
-    
+        [php]
+        // in apps/frontend/templates/layout.php
+        <?php use_helper('sfCombine') ?>
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+        <head>
+          <?php include_http_metas() ?>
+          <?php include_metas() ?>
+          <?php include_title() ?>
+          <link rel="shortcut icon" href="/favicon.ico" />
+          <?php include_combined_stylesheets() ?>
+          <?php include_combined_javascripts() ?>
+        </head>
+        <body>
+          <?php echo $sf_flash->getRaw('notice') ?>
+        </body>
+
     Note that if you use symfony 1.2 you must change the `common` filter class from `sfCommonFilter` to
     `sfCombineFilter` in your application `filters.yml` (See `Including Javascript And CSS With A Filter` chapter)
 
-5. Change the `common` filter class from `sfCommonFilter` to `sfCombineFilter` in your application `filters.yml`
-
-        [yml]
-        # in myproject/apps/frontend/config/filters.yml
-        rendering: ~
-        web_debug: ~
-        security:  ~
-
-        # generally, you will want to insert your own filters here
-
-        cache:     ~
-        common:
-          class: sfCombineFilter
-        flash:     ~
-        execution: ~
+    You sometimes need to change the place where script and CSS inclusion tags appear in the source code. For instance, 
+    you may want to move the `<script>` tags to the bottom of the page, just before the `</body>`, to speed up page 
+    rendering. Or you may want to move the `<link>` tags before conditional comments in the header, to allow custom IE 
+    styles.
+    
+        [php]
+        // in apps/frontend/templates/layout.php
+        <?php use_helper('sfCombine') ?>
+        <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+        <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+        <head>
+          <?php include_http_metas() ?>
+          <?php include_metas() ?>
+          <?php include_title() ?>
+          <link rel="shortcut icon" href="/favicon.ico" />
+          <?php include_combined_stylesheets() ?>
+          <!--[if lte IE 6]>
+            <?php echo stylesheet_tag('ie6.css') ?>
+          <![endif]-->
+        </head>
+        <body>
+          <?php echo $sf_flash->getRaw('notice') ?>
+          <?php include_combined_javascripts() ?>
+        </body>
 
 6. Clear the cache to enable the autoloading to find the new classes
 
@@ -216,9 +220,9 @@ the development environment. The default setup is as follows:
           inline_minify_method: ~
           inline_minify_method_options: ~
 
-You can then overwrite in your app.yml files to set what you would like locally
+You can then overwrite in your app.yml files to set what you would like locally.
 
-By default, sfCombinePlugin is disabled locally
+By default, sfCombinePlugin is disabled locally.
 
 ### Caching
 
@@ -247,10 +251,10 @@ Since the combined files are sent with `Cache-Control` headers to invite browser
 cache, modifications in the original JavaScript and CSS files may never reach the users. Consider the following 
 scenario:
 
-1. User A downloads the home page of your application
+1. `User A` downloads the home page of your application
 2. This pages requires combined script and CSS files, and allows the browser to keep them in cache for 10 days
 3. A little while after (less than 10 days), you modify a CSS of the home page and push that file in production
-4. User A downloads the home page again. It still references the same combined files, which are still in cache, so the 
+4. `User A` downloads the home page again. It still references the same combined files, which are still in cache, so the 
 browser doesn't even send a request for them and misses the updated version.
 
 To avoid this common pitfall, change the value of the `app_sfCombinePlugin_asset_version` setting every time you deploy 
@@ -268,8 +272,9 @@ for the most recently modified timestamp and suffix the url with this timestamp
 ### Including Javascript And CSS With A Filter
 
 Each time you call `$response->addJavascript()` or `$response->addStylesheet()` in an action, `use_javascript()` or 
-`use_stylesheet()` in a template, symfony stores the related file path in the response. In symfony 1.2, the `common` filter outputs the 
-correct HTML tag to include these files (`<script>` or `<link>`) just before the closing `</head>` tag by default.
+`use_stylesheet()` in a template, symfony stores the related file path in the response. In symfony 1.2, the `common` filter
+outputs the correct HTML tag to include these files (`<script>` or `<link>`) just before the closing `</head>`
+tag by default.
 
     [php]
     // in apps/frontend/templates/layout.php
