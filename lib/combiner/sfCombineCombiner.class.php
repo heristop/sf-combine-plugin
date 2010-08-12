@@ -313,7 +313,7 @@ abstract class sfCombineCombiner
       catch (Exception $e)
       {
         sfContext::getInstance()->getLogger()->err(
-            'sfCombine exception: ' . $e->getMessage()
+          'sfCombine exception: ' . $e->getMessage()
         );
       }
     }
