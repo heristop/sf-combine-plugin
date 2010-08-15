@@ -1,4 +1,8 @@
 sfCombine:
+  options:
+    symfony:
+      form:   false
+      filter: false
   tableName: sf_combine
   columns:
     asset_key: { type: string(40), notnull: true, primary: true }
