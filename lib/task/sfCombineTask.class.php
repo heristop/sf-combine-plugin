@@ -60,18 +60,18 @@ EOF;
     {
       if (! class_exists('sfCombine'))
       {
-        $this->logSection('combine', 'Call the task `doctrine:build-model`', null, 'ERROR');
+        $this->logSection('combine', 'Call the task `propel:build-model`', null, 'ERROR');
         return false;
       }
       
-      $results = sfCombine::getAll();
+      $results = sfCombineQuery::create()->find();
       foreach ($results as $result)
       {
         $cache->remove($result->getAssetKey());
       }
 
       $this->logSection('combine', 'Cleanup cache complete', null, 'INFO');
-      $deleted = sfCombine::deleteAll();
+      $deleted = sfCombineQuery::create()->deleteAll();
       $this->logSection(
         'combine',
         sprintf(

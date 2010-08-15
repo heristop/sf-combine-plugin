@@ -1,0 +1,8 @@
+propel:
+  _attributes:         { package: plugins.sfCombinePlugin.lib.model }
+
+  sf_combine:
+    _attributes:  { phpName: sfCombine }
+    _propel_behaviors:   { symfony: { form: false, filter: false } }
+    asset_key:    { type: varchar, size: 40, required: true, primaryKey: true }
+    files:        { type: longvarchar, required: true }
