@@ -1,8 +1,8 @@
 # sfCombine Config 
 
-dev:
-  sfCombinePlugin:
-    enabled:        false         # disable the plugin in development
+#dev:
+#  sfCombinePlugin:
+#    enabled:        false         # disable the plugin in development
 
 default:
   sfCombinePlugin:
