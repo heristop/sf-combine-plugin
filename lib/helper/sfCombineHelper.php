@@ -365,28 +365,7 @@ function javascript_tag_minified($content = null)
   else
   {
     // minify content
-    $config = sfConfig::get('app_sfCombinePlugin_js', array());
-
-    $combinerClass = isset($config['combiner_class'])
-      ? $config['combiner_class']
-      : 'sfCombineCombinerJs'
-    ;
-
-    $combiner = new $combinerClass(
-      $config
-    );
-
-    $content = $combiner->minify(
-      $content,
-      (isset($config['inline_minify_method']) 
-        ? $config['inline_minify_method'] 
-        : false
-      ),
-      (isset($config['inline_minify_method_options']) 
-        ? $config['inline_minify_method_options'] 
-        : array()
-      )
-    );
+    $content = sfCombineUtility::minifyInlineJs($content);
 
     return javascript_tag($content);
   }
@@ -418,28 +397,9 @@ function style_tag_minified($content = null, array $elementOptions = array())
   else
   {
     // minify content
-    $config = sfConfig::get('app_sfCombinePlugin_css', array());
-    $combinerClass = isset($config['combiner_class'])
-                   ? $config['combiner_class']
-                   : 'sfCombineCombinerCss';
+    $content = sfCombineUtility::minifyInlineCss($content);
 
-    $combiner = new $combinerClass(
-      $config
-    );
-
-    $content = $combiner->minify(
-      $content,
-      (isset($config['inline_minify_method'])
-        ? $config['inline_minify_method']
-        : false
-      ),
-      (isset($config['inline_minify_method_options'])
-        ? $config['inline_minify_method_options']
-        : array()
-      )
-    );
-
-    if (!isset($elementOptionsp['type']))
+    if (!isset($elementOptions['type']))
     {
       $elementOptions['type'] = 'text/css';
     }

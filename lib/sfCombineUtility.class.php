@@ -200,4 +200,79 @@ class sfCombineUtility
 
     return $version < 6 || ($version == 6 && strpos($userAgent, 'SV1') === false);
   }
+
+  /**
+   *
+   * @param   string  $js
+   * @return  string
+   */
+  static public function minifyInlineJs($js)
+  {
+    if (!sfConfig::get('app_sfCombinePlugin_enabled', false))
+    {
+      return $js;
+    }
+
+    // minify content
+    $config = sfConfig::get('app_sfCombinePlugin_js', array());
+
+    $combinerClass = isset($config['combiner_class'])
+      ? $config['combiner_class']
+      : 'sfCombineCombinerJs'
+    ;
+
+    $combiner = new $combinerClass(
+      $config
+    );
+
+    $js = $combiner->minify(
+      $js,
+      (isset($config['inline_minify_method'])
+        ? $config['inline_minify_method']
+        : false
+      ),
+      (isset($config['inline_minify_method_options'])
+        ? $config['inline_minify_method_options']
+        : array()
+      )
+    );
+
+    return $js;
+  }
+
+  /**
+   *
+   * @param   string  $css
+   * @return  string
+   */
+  static public function minifyInlineCss($css)
+  {
+    if (!sfConfig::get('app_sfCombinePlugin_enabled', false))
+    {
+      return $css;
+    }
+
+    $config = sfConfig::get('app_sfCombinePlugin_css', array());
+    $combinerClass = isset($config['combiner_class'])
+                   ? $config['combiner_class']
+                   : 'sfCombineCombinerCss';
+
+    $combiner = new $combinerClass(
+      $config
+    );
+
+    $css = $combiner->minify(
+      $css,
+      (isset($config['inline_minify_method'])
+        ? $config['inline_minify_method']
+        : false
+      ),
+      (isset($config['inline_minify_method_options'])
+        ? $config['inline_minify_method_options']
+        : array()
+      )
+    );
+
+    return $css;
+  }
 }
