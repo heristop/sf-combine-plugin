@@ -45,6 +45,8 @@ class sfCombineActions extends sfActions
       $this->getRequestParameter('base64'),
       $this->getRequestParameter('files')
     );
+
+    $this->_setLastModifiedHeader($combiner);
     $this->assets = $combiner->process();
   }
 
@@ -66,6 +68,30 @@ class sfCombineActions extends sfActions
       $this->getRequestParameter('base64'),
       $this->getRequestParameter('files')
     );
+
+    $this->_setLastModifiedHeader($combiner);
     $this->assets = $combiner->process();
+  }
+
+  /**
+   * Set last modified header to response
+   *
+   * @param   sfCombineCombiner   $combiner
+   * @return  void
+   */
+  protected function _setLastModifiedHeader(sfCombineCombiner $combiner)
+  {
+    if (sfConfig::get('app_sfCombinePlugin_set_last_modified_header', false))
+    {
+      $timestamp = $combiner->getLastModifiedTimestamp();
+
+      if ($timestamp)
+      {
+        $this->getResponse()->setHttpHeader(
+          'Last-Modified',
+          $this->getResponse()->getDate($timestamp)
+        );
+      }
+    }
   }
 }

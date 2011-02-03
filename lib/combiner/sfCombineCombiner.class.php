@@ -660,4 +660,30 @@ abstract class sfCombineCombiner
 
     return $return;
   }
+
+  /**
+   * Get the last modified timestamp for the files in this collection, will
+   * return 0 if there are no files or all failed to get last modified timestamp
+   *
+   * @return  int
+   */
+  public function getLastModifiedTimestamp()
+  {
+    $newestTimestamp = 0;
+
+    foreach ($this->getFiles() as $file)
+    {
+      $timestamp = sfCombineUtility::getModifiedTimestamp(
+        $file, array($this, 'getAssetPath')
+      );
+
+      if ($timestamp > $newestTimestamp)
+      {
+        $newestTimestamp = $timestamp;
+      }
+    }
+
+    return $newestTimestamp;
+
+  }
 }
