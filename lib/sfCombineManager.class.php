@@ -315,7 +315,7 @@ class sfCombineManager
   {
     $groupData = $this->getGroups();
 
-    $return = array();
+    $notCombined = $combined = array();
 
     foreach($assets as $file => $options)
     {
@@ -393,7 +393,7 @@ class sfCombineManager
         }
 
         // file not combinable
-        $return[] = array(
+        $notCombined[] = array(
           'files' => $file,
           'options' => $options,
           'combinable' => false,
@@ -464,7 +464,7 @@ class sfCombineManager
           }
         }
 
-        $return[] = array(
+        $combined[] = array(
           'files' => $combinedFiles,
           'options' => $options,
           'combinable' => true,
@@ -478,6 +478,6 @@ class sfCombineManager
       $this->updateUsedGroups($groupsUse, $groupsUseType);
     }
 
-    return $return;
+    return array_merge($notCombined, $combined);
   }
 }
