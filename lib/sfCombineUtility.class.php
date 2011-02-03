@@ -124,7 +124,11 @@ class sfCombineUtility
    */
   static public function skipAsset($file, array $doNotCombine = array())
   {
-    return in_array($file, $doNotCombine);
+    return 
+      in_array($file, $doNotCombine)
+      ||
+      in_array(basename($file), $doNotCombine)
+    ;
   }
 
   /**
@@ -172,8 +176,13 @@ class sfCombineUtility
     {
       $lifetime = $max_age * 86400; // 24*60*60
       $response->addCacheControlHttpHeader('max-age', $lifetime);
-      $response->setHttpHeader('Pragma', null, false);
-      $response->setHttpHeader('Expires', null, false);
+      $response->setHttpHeader(
+        'Pragma',
+        sfConfig::get('app_sfCombinePlugin_pragma_header', 'public')
+      );
+      $response->setHttpHeader(
+        'Expires', $response->getDate(time() + $lifetime)
+      );
     }
   }
 

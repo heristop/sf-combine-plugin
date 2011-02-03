@@ -9,6 +9,8 @@ default:
     enabled:        true          # enabling the plugin will combine script and css files into a single file
     asset_version:  0             # key to the asset version
     client_cache_max_age: 10      # enable the browser to keep a copy of the files for x days (false to disable)
+    pragma_header: public         # when sending cache headers sets the pragma header
+    set_last_modified_header: true # whether to send a last modified header
     gzip:           true          # allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage
     url_type:       key           # can be key, files, or base64 (note files can be buggy without an asset version)
     filter_include_unused_groups: true # whether to use the filter to include groups that havent been output
