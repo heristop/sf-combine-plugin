@@ -55,7 +55,9 @@ function include_combined_javascripts(
   $markGroupsUsed = true
 )
 {
-  echo get_combined_javascripts($groups, $groupType);
+  echo get_combined_javascripts(
+    $groups, $groupType, $onlyUnusedGroups, $markGroupsUsed
+  );
 }
 
 /**
@@ -148,7 +150,7 @@ function get_combined_javascripts(
       }
 
       $html .= javascript_include_tag(
-        javascript_path($file),
+        $file,
         $fileDetails['options']
       );
     }
@@ -207,7 +209,9 @@ function include_combined_stylesheets(
   $markGroupsUsed = true
 )
 {
-  echo get_combined_stylesheets();
+  echo get_combined_stylesheets(
+    $groups, $groupType, $onlyUnusedGroups, $markGroupsUsed
+  );
 }
 
 /**
@@ -283,7 +287,7 @@ function get_combined_stylesheets(
       }
 
       $html .= stylesheet_tag(
-        stylesheet_path($file),
+        $file,
         $fileDetails['options']
       );
 
