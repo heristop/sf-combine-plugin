@@ -435,6 +435,9 @@ Todo
 Changelog
 ---------
 
+### 2011-09-02 | master
+ * kevindew: fixed incorrect generateOutput method call in sfCombinerCombinerCss
+
 ### 2011-03-18 | master
  * kevindew: removed paths that aren't needed and added arguments missing from functions
 
