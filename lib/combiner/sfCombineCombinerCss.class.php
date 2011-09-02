@@ -92,13 +92,13 @@ class sfCombineCombinerCss extends sfCombineCombiner
   /**
    * @see parent
    */
-  public function generateOutput(
+  protected function _generateOutput(
     $minify = false,
     $minifySkipSuffixes = array(),
     $minifySkip = array()
   )
   {
-    $output = parent::generateOutput($minify, $minifySkipSuffixes, $minifySkip);
+    $output = parent::_generateOutput($minify, $minifySkipSuffixes, $minifySkip);
 
     $output = self::fixImports(
       $output,
