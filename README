@@ -435,6 +435,9 @@ Todo
 Changelog
 ---------
 
+### 2011-03-18 | master
+ * kevindew: removed paths that aren't needed and added arguments missing from functions
+
 ### 2010-06-06 | master
  * kevindew: symfony 1.4 work
  * kevindew: Javascript/CSS groups
