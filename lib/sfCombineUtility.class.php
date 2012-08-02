@@ -108,7 +108,7 @@ class sfCombineUtility
     {
       if (file_exists($path))
       {
-        return $path;
+        return realpath($path);
       }
     }
 

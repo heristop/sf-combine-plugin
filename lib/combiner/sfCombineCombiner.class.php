@@ -236,6 +236,11 @@ abstract class sfCombineCombiner
         {
           throw new Exception($filePath . ' is not readable');
         }
+        
+        if (strpos($filePath, sfConfig::get('sf_web_dir')) !== 0)
+        {
+          throw new Exception($filePath . ' inclusion is forbidden');
+        }
 
         $includeFile = false;
 
