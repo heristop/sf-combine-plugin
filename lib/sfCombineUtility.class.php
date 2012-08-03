@@ -108,11 +108,42 @@ class sfCombineUtility
     {
       if (file_exists($path))
       {
-        return realpath($path);
+        return $path;
       }
     }
 
     return false;
+  }
+
+    /**
+     * Normalize a path (get rid of relatives)
+     *
+     * based on: http://stackoverflow.com/questions/4049856/replace-phps-realpath
+     *
+     * @static
+     * @param string $path
+     * @return mixed
+     */
+    static public function normalizePath($path)
+  {
+    if (strlen($path) == 0) {
+        return $path;
+    }
+
+    $normalizedPath = str_replace(array('/', '\\'), DIRECTORY_SEPARATOR, $path);
+    $parts = array_filter(explode(DIRECTORY_SEPARATOR, $normalizedPath), 'strlen');
+    $absolutes = array();
+    foreach ($parts as $part) {
+      if ('.'  == $part) continue;
+      if ('..' == $part) {
+          array_pop($absolutes);
+      } else {
+          $absolutes[] = $part;
+      }
+    }
+    $normalizedPath = implode(DIRECTORY_SEPARATOR, $absolutes);
+
+    return $path{0} == '/' ? '/' . $normalizedPath : $normalizedPath;
   }
 
   /**

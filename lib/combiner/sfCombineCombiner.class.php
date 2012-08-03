@@ -236,10 +236,18 @@ abstract class sfCombineCombiner
         {
           throw new Exception($filePath . ' is not readable');
         }
-        
-        if (strpos($filePath, sfConfig::get('sf_web_dir')) !== 0)
+
+        $realPath = realpath($filePath);
+        // realpath breaks symlinked assets
+        $normalizedPath = sfCombineUtility::normalizePath($filePath);
+
+        if (
+          strpos($realPath, sfConfig::get('sf_web_dir')) !== 0
+          &&
+          strpos($normalizedPath, sfConfig::get('sf_web_dir')) !== 0
+        )
         {
-          throw new Exception($filePath . ' inclusion is forbidden');
+          throw new Exception($filePath . ' is not in the web directory');
         }
 
         $includeFile = false;
