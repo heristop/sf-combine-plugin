@@ -12,7 +12,7 @@ default:
     pragma_header: public         # when sending cache headers sets the pragma header
     set_last_modified_header: true # whether to send a last modified header
     gzip:           true          # allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage
-    url_type:       key           # can be key, files, or base64 (note files can be buggy without an asset version)
+    url_type:       files         # can be key, files, or base64 (note files can be buggy without an asset version)
     filter_include_unused_groups: true # whether to use the filter to include groups that havent been output
     timestamp:
       enabled: true               # suffix a timestamp where available to files for their asset version

@@ -62,25 +62,7 @@ Installation
    and extract it under your project's `plugins/` directory, or use `svn:externals` on your project's `plugins` 
    directory.
 
-2. Rebuild your model. For Doctrine, that means calling the doctrine `doctrine:build-model` task:
-
-        > php symfony doctrine:build-model
-
-   This will create a model called `sfCombinePlugin`.
-   For Propel, call the task `propel:build-model`. It will generate a model called `sfCombine`.
-
-3. Create the related `sf_combine` table in your database. Symfony can generate the necessary SQL code for you:
-
-        > php symfony propel:build-sql
-
-   Then, depending on your database engine, use the SQL code generated in 
-   `data/sql/plugins.sfCombinePlugin.lib.model.schema.sql` to insert the table in the database. For instance, for mySQL:
-
-        > mysql -u username -p dbname < data/sql/plugins.sfCombinePlugin.lib.model.schema.sql
-
-    For Doctrine, you need to call this task `doctrine:build-sql`.
-
-4. Enable the `sfCombine` module in your frontend application, via the `settings.yml` file.
+2. Enable the `sfCombine` module in your frontend application, via the `settings.yml` file.
 
         [yml]
         # in myproject/apps/frontend/config/settings.yml
@@ -88,7 +70,7 @@ Installation
           .settings:
             enabled_modules: [..., sfCombine]
 
-5. Replacing JavaScript and CSS calls in the layout
+3. Replacing JavaScript and CSS calls in the layout
 
     Since symfony 1.3, the layout uses the regular `include_javascripts()` and `include_stylesheets()` helpers to output calls
     to the JavaScript and CSS files.
@@ -143,6 +125,27 @@ Installation
           <?php include_combined_javascripts() ?>
         </body>
 
+4. If you uses keys for url, the filenames must be saved in database.
+You need to copy the schema.yml.sample file in the config directory of your project. Then, rebuild your model.
+
+For Doctrine, that means calling the doctrine `doctrine:build-model` task:
+
+        > php symfony doctrine:build-model
+
+   This will create a model called `sfCombinePlugin`.
+   For Propel, call the task `propel:build-model`. It will generate a model called `sfCombine`.
+
+5. Create the related `sf_combine` table in your database. Symfony can generate the necessary SQL code for you:
+
+        > php symfony doctrine:build-sql
+
+   Then, depending on your database engine, use the SQL code generated in 
+   `data/sql/plugins.sfCombinePlugin.lib.model.schema.sql` to insert the table in the database. For instance, for mySQL:
+
+        > mysql -u username -p dbname < data/sql/plugins.sfCombinePlugin.lib.model.schema.sql
+
+    For Propel, you need to call this task `propel:build-sql`.
+
 6. Clear the cache to enable the autoloading to find the new classes
 
         > php symfony cc
@@ -172,7 +175,7 @@ the development environment. The default setup is as follows:
         asset_version:  0             # key to the asset version
         client_cache_max_age: 10      # enable the browser to keep a copy of the files for x days (false to disable)
         gzip:           true          # allow PHP gzipping of the combined JavaScript and CSS files to reduce bandwidth usage
-        url_type:       key           # can be key, files, or base64 (note files can be buggy without an asset version)
+        url_type:       files         # can be key, files, or base64 (note files can be buggy without an asset version)
         filter_include_unused_groups: true # whether to use the filter to include groups that havent been output
         timestamp:
           enabled: true               # suffix a timestamp where available to files for their asset version
