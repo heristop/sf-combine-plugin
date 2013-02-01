@@ -1,0 +1,16 @@
+{
+    "name": "heristop/sf-combine-plugin",
+    "type": "symfony1-plugin",
+    "description": "Combines and compresses JavaScript and CSS files",
+    "keywords": ["symfony", "combine", "js", "css", "minify"],
+    "license": "MIT",
+    "homepage": "https://github.com/heristop/sfCombinePlugin",
+    "require": {
+        "composer/installers": "*"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.1-dev"
+        }
+    }
+}
