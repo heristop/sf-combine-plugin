@@ -1,0 +1,7 @@
+lib/model/map/*
+lib/model/om/*
+lib/filter/base/*
+lib/form/base/*
+lib/model/sfCombine.php
+lib/model/sfCombinePeer.php
+lib/model/sfCombineQuery.php

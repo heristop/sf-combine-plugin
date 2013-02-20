@@ -18,6 +18,7 @@ class sfCombineCleanUpTask extends sfBaseTask
     $this->addOptions(array(
       new sfCommandOption('application', null, sfCommandOption::PARAMETER_OPTIONAL, 'The application name', null),
       new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
+      new sfCommandOption('orm', null, sfCommandOption::PARAMETER_REQUIRED, 'The orm', 'doctrine')
     ));
 
     $this->namespace = 'combine';
@@ -39,6 +40,9 @@ EOF;
     // initialize database manager
     $databaseManager = new sfDatabaseManager($this->configuration);
     $flag = true;
+
+    $ormAdapter = new OrmAdapter(OrmAdapterFactory::create($options['orm']));
+    $ormAdapter->setClass('sfCombine');
 
     if (function_exists('apc_store') && ini_get('apc.enabled'))
     {
@@ -63,15 +67,15 @@ EOF;
         $this->logSection('combine', 'Call the task `doctrine:build-model`', null, 'ERROR');
         return false;
       }
-      
-      $results = Doctrine::getTable('sfCombine')->findAll();
+
+      $results = $ormAdapter->find();
       foreach ($results as $result)
       {
         $cache->remove($result->getAssetKey());
       }
 
       $this->logSection('combine', 'Cleanup cache complete', null, 'INFO');
-      $deleted = Doctrine::getTable('sfCombine')->deleteAll();
+      $deleted = $ormAdapter->deleteAll();
       $this->logSection(
         'combine',
         sprintf(

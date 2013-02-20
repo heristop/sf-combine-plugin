@@ -1,4 +1,4 @@
-# sfCombine Config 
+# sfCombine Config
 
 #dev:
 #  sfCombinePlugin:
@@ -7,6 +7,7 @@
 default:
   sfCombinePlugin:
     enabled:        true          # enabling the plugin will combine script and css files into a single file
+    orm:            doctrine      # propel or doctrine
     asset_version:  0             # key to the asset version
     client_cache_max_age: 10      # enable the browser to keep a copy of the files for x days (false to disable)
     pragma_header: public         # when sending cache headers sets the pragma header
