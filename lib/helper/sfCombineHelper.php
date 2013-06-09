@@ -148,11 +148,15 @@ function get_combined_javascripts(
           $file .= '?t=' . $fileDetails['timestamp'];
         }
       }
-
-      $html .= javascript_include_tag(
-        $file,
-        $fileDetails['options']
-      );
+      $js_config = sfConfig::get('app_sfCombinePlugin_js');
+      $cdn = $js_config['cdn'];
+      if($cdn['enabled'])
+      {
+        $temp = javascript_include_tag($file,$fileDetails['options']);
+        $html .= preg_replace('/"\/js/','"//'.$cdn['host'].'/js',$temp);
+      } else {
+        $html .= javascript_include_tag($file,$fileDetails['options']);
+      }
     }
     else
     {
@@ -285,11 +289,15 @@ function get_combined_stylesheets(
           $file .= '?t=' . $fileDetails['timestamp'];
         }
       }
-
-      $html .= stylesheet_tag(
-        $file,
-        $fileDetails['options']
-      );
+      $css_config = sfConfig::get('app_sfCombinePlugin_css');
+      $cdn = $css_config['cdn'];
+      if($cdn['enabled'])
+      {
+        $temp = stylesheet_tag($file,$fileDetails['options']);
+        $html .= preg_replace('/"\/css/','"//'.$cdn['host'].'/css',$temp);
+      } else {
+        $html .= stylesheet_tag($file,$fileDetails['options']);
+    }
 
     } 
     else
