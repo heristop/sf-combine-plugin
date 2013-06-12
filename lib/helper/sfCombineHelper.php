@@ -153,7 +153,7 @@ function get_combined_javascripts(
       if($cdn['enabled'])
       {
         $temp = javascript_include_tag($file,$fileDetails['options']);
-        $html .= preg_replace('/"\/js/','"//'.$cdn['host'].'/js',$temp);
+        $html .= preg_replace('/"\/js/','"'.$cdn['protocol'].$cdn['host'].'/js',$temp);
       } else {
         $html .= javascript_include_tag($file,$fileDetails['options']);
       }
@@ -294,7 +294,7 @@ function get_combined_stylesheets(
       if($cdn['enabled'])
       {
         $temp = stylesheet_tag($file,$fileDetails['options']);
-        $html .= preg_replace('/"\/css/','"//'.$cdn['host'].'/css',$temp);
+        $html .= preg_replace('/"\/css/','"'.$cdn['protocol'].$cdn['host'].'/css',$temp);
       } else {
         $html .= stylesheet_tag($file,$fileDetails['options']);
     }
