@@ -300,7 +300,7 @@ function get_combined_stylesheets(
       if($cdn['enabled'])
       {
         $temp = stylesheet_tag(url_for('@' . $route . '?module=sfCombine&action=css&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
-        $html .= preg_replace('/"\/css/','"'.$cdn['protocol'].$cdn['host'].'/css',$temp);
+        $html .= preg_replace('/"\/css-min/','"'.$cdn['protocol'].$cdn['host'].'/css-min',$temp);
       } else {
         $html .= stylesheet_tag(url_for('@' . $route . '?module=sfCombine&action=css&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
       }
