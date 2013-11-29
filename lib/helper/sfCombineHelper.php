@@ -159,7 +159,9 @@ function get_combined_javascripts(
       if($cdn['enabled'])
       {
         $temp = javascript_include_tag(url_for('@' . $route . '?module=sfCombine&action=js&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
-        $html .= preg_replace('/"\/js-min/','"'.$cdn['protocol'].$cdn['host'].'/js-min',$temp); 
+        //$html .= preg_replace('/"\/js-min/','"'.$cdn['protocol'].$cdn['host'].'/js-min',$temp); 
+        $html .= preg_replace('/"\/frontend_dev.php\/js-min/','"'.$cdn['protocol'].$cdn['host'].'/js-min',$temp);
+        $html = preg_replace('/<script /','<script async ',$html);
       } else {
         $html .= javascript_include_tag(url_for('@' . $route . '?module=sfCombine&action=js&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
       }
