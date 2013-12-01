@@ -146,8 +146,10 @@ function get_combined_javascripts(
       {
         $temp = javascript_include_tag($file,$fileDetails['options']);
         $html .= preg_replace('/"\/js/','"'.$cdn['protocol'].$cdn['host'].'/js',$temp);  
+        $html = preg_replace('/<script /','<script async defer ',$html);
       } else {
         $html .= javascript_include_tag($file,$fileDetails['options']);
+        $html = preg_replace('/<script /','<script async defer ',$html);
       }
     } else {
 
