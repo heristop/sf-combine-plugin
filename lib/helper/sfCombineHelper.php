@@ -146,10 +146,10 @@ function get_combined_javascripts(
       {
         $temp = javascript_include_tag($file,$fileDetails['options']);
         $html .= preg_replace('/"\/js/','"'.$cdn['protocol'].$cdn['host'].'/js',$temp);  
-        $html = preg_replace('/<script /','<script async defer ',$html);
+        //$html = preg_replace('/<script /','<script async defer ',$html);
       } else {
         $html .= javascript_include_tag($file,$fileDetails['options']);
-        $html = preg_replace('/<script /','<script async defer ',$html);
+        //$html = preg_replace('/<script /','<script async defer ',$html);
       }
     } else {
 
@@ -163,10 +163,10 @@ function get_combined_javascripts(
         $temp = javascript_include_tag(url_for('@' . $route . '?module=sfCombine&action=js&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
         $html .= preg_replace('/"\/js-min/','"'.$cdn['protocol'].$cdn['host'].'/js-min',$temp); 
         //$html .= preg_replace('/"\/frontend_dev.php\/js-min/','"'.$cdn['protocol'].$cdn['host'].'/js-min',$temp);
-        $html = preg_replace('/<script /','<script async defer ',$temp);
+        //$html = preg_replace('/<script /','<script async defer ',$temp);
       } else {
         $html .= javascript_include_tag(url_for('@' . $route . '?module=sfCombine&action=js&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
-        $html = preg_replace('/<script /','<script async defer ',$html);
+        //$html = preg_replace('/<script /','<script async defer ',$html);
       }
       
     }
