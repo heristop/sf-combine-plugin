@@ -130,44 +130,45 @@ function get_combined_javascripts(
 
       $file = $fileDetails['files'];
 
-      if (
-        isset($timestampConfig['uncombinable'])
-        &&
-        $timestampConfig['uncombinable']
-        &&
-        $fileDetails['timestamp']
-      )
+      if (isset($timestampConfig['uncombinable']) && $timestampConfig['uncombinable'] && $fileDetails['timestamp'])
       {
         // add timestamp
         if (strpos($file, '?') !== false)
         {
           $file .= '&t=' . $fileDetails['timestamp'];
-        }
-        else
-        {
+        } else {
           $file .= '?t=' . $fileDetails['timestamp'];
         }
       }
-
-      $html .= javascript_include_tag(
-        $file,
-        $fileDetails['options']
-      );
-    }
-    else
-    {
+      $js_config = sfConfig::get('app_sfCombinePlugin_js');
+      $cdn = $js_config['cdn'];
+      if($cdn['enabled'])
+      {
+        $temp = javascript_include_tag($file,$fileDetails['options']);
+        $html .= preg_replace('/"\/js/','"'.$cdn['protocol'].$cdn['host'].'/js',$temp);  
+        //$html = preg_replace('/<script /','<script async defer ',$html);
+      } else {
+        $html .= javascript_include_tag($file,$fileDetails['options']);
+        //$html = preg_replace('/<script /','<script async defer ',$html);
+      }
+    } else {
 
       $route = isset($config['route']) ? $config['route'] : 'sfCombine';
 
-      $html .= javascript_include_tag(
-        url_for(
-          '@' . $route . '?module=sfCombine&action=js&'
-          . sfCombineUrl::getUrlString(
-            $fileDetails['files'], $fileDetails['timestamp']
-          )
-        ),
-        $fileDetails['options']
-      );
+      $js_config = sfConfig::get('app_sfCombinePlugin_js');
+      $cdn = $js_config['cdn'];
+
+      if($cdn['enabled'])
+      {
+        $temp = javascript_include_tag(url_for('@' . $route . '?module=sfCombine&action=js&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
+        //$html .= preg_replace('/"\/js-min/','"'.$cdn['protocol'].$cdn['host'].'/js-min',$temp); 
+        $html .= preg_replace('/"\/js-min/','"'.$cdn['protocol'].$cdn['host'].'/js-min',$temp);
+        //$html = preg_replace('/<script /','<script async defer ',$temp);
+      } else {
+        $html .= javascript_include_tag(url_for('@' . $route . '?module=sfCombine&action=js&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
+        //$html = preg_replace('/<script /','<script async defer ',$html);
+      }
+      
     }
   }
   
@@ -285,27 +286,29 @@ function get_combined_stylesheets(
           $file .= '?t=' . $fileDetails['timestamp'];
         }
       }
+      $css_config = sfConfig::get('app_sfCombinePlugin_css');
+      $cdn = $css_config['cdn'];
+      if($cdn['enabled'])
+      {
+        $temp = stylesheet_tag($file,$fileDetails['options']);
+        $html .= preg_replace('/"\/css/','"'.$cdn['protocol'].$cdn['host'].'/css',$temp);
+      } else {
+        $html .= stylesheet_tag($file,$fileDetails['options']);
+    }
 
-      $html .= stylesheet_tag(
-        $file,
-        $fileDetails['options']
-      );
-
-    } 
-    else
-    {
+    }  else {
 
       $route = isset($config['route']) ? $config['route'] : 'sfCombine';
 
-      $html .= stylesheet_tag(
-        url_for(
-          '@' . $route . '?module=sfCombine&action=css&'
-          . sfCombineUrl::getUrlString(
-              $fileDetails['files'], $fileDetails['timestamp']
-            )
-        ),
-        $fileDetails['options']
-      );
+      $css_config = sfConfig::get('app_sfCombinePlugin_css');
+      $cdn = $css_config['cdn'];
+      if($cdn['enabled'])
+      {
+        $temp = stylesheet_tag(url_for('@' . $route . '?module=sfCombine&action=css&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
+        $html .= preg_replace('/"\/css-min/','"'.$cdn['protocol'].$cdn['host'].'/css-min',$temp);
+      } else {
+        $html .= stylesheet_tag(url_for('@' . $route . '?module=sfCombine&action=css&'. sfCombineUrl::getUrlString($fileDetails['files'], $fileDetails['timestamp'])),$fileDetails['options']);
+      }
     }
   }
 
