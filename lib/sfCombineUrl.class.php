@@ -35,7 +35,7 @@ class sfCombineUrl
     if (sfConfig::get('app_sfCombinePlugin_asset_version', false))
     {
       $string .= '&v='
-              . sfConfig::get('app_sfCombinePlugin_asset_version');
+        . sfConfig::get('app_sfCombinePlugin_asset_version');
     }
 
     if ($timestamp)
@@ -117,6 +117,7 @@ class sfCombineUrl
    */
   static public function getKey(array $files, $separator = ' ')
   {
+    $orm = sfConfig::get('app_sfCombinePlugin_orm');
     $content = self::getBase64($files, $separator);
     $key     = sha1($content);
     $check   = false;
@@ -142,8 +143,11 @@ class sfCombineUrl
       {
         throw new Exception('Call the task `doctrine:build-model` or use base64 url');
       }
-      
-      $keyExists = Doctrine::getTable('sfCombine')->find($key);
+
+      $ormAdapter = new OrmAdapter(OrmAdapterFactory::create($orm));
+      $ormAdapter->setClass('sfCombine');
+      $keyExists = $ormAdapter->findPk($key);
+
       if (!$keyExists)
       {
         $combine = new sfCombine();
@@ -151,11 +155,11 @@ class sfCombineUrl
         $combine->setFiles($content);
         $combine->save();
       }
-        
+
       $cache->set($key, $content);
     }
-    
-    
+
+
 
     return $key;
   }
@@ -168,7 +172,7 @@ class sfCombineUrl
   static public function getFilesByKey($key, $separator = ' ')
   {
     $base64 = false;
-  
+
     // try get base64 from cache
     if (function_exists('apc_store') && ini_get('apc.enabled'))
     {
@@ -187,7 +191,10 @@ class sfCombineUrl
     // check db
     if (!$base64 && class_exists('sfCombine'))
     {
-      $combine = Doctrine::getTable('sfCombine')->find($key);
+      $orm = sfConfig::get('app_sfCombinePlugin_orm');
+      $ormAdapter = new OrmAdapter(OrmAdapterFactory::create($orm));
+      $ormAdapter->setClass('sfCombine');
+      $combine = $ormAdapter->findPk($key);
       $base64 = $combine ? $combine->getFiles() : false;
     }
 
